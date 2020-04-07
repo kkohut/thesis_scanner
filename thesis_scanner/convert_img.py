@@ -12,9 +12,9 @@ def extract_and_print(paths):
     extr_strings= []
     for img in paths:
         ind = paths.index(img) + 1
-        extr_string = pytesseract.image_to_string(image = Image.open(img))
+        extr_string = pytesseract.image_to_string(image = Image.open(img), lang="deu")
         print(f"\n___________________________________________________________________\n"
-            "   Document ", ind,
+            "   Document", ind,
               "\n___________________________________________________________________")
         extr_strings.append(extr_string)
         print(extr_string)

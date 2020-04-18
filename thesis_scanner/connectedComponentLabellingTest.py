@@ -37,7 +37,7 @@ def thresh_image(image_turned):
     return image_thresh
 
 
-def get_kernel(w, h):
+def get_kernel(h, w):
     '''
     unit8 -> unsigned integers ranging from 0 to 255
     '''
@@ -47,14 +47,14 @@ def get_kernel(w, h):
 def dilate_image(image_thresh):
     '''
     '''
-    return cv2.dilate(image_thresh, get_kernel(9, 1))
+    return cv2.dilate(image_thresh, get_kernel(1, 12))
 
 
 
 def erode_image(image_dilate):
     '''
     '''
-    return cv2.erode(image_dilate, get_kernel(1, 3))
+    return cv2.erode(image_dilate, get_kernel(4, 1))
 
 
 def find_contours(image_erode):

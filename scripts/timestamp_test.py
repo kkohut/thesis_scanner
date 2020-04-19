@@ -1,16 +1,38 @@
-import timestamp
+from datetime import datetime
+import timestamp , unittest
+
 """
 WORK IN PROGRESS
-this script will be a test script to the "timsestamp.py" script 
+this script will be a unittest script to the "timsestamp.py" script 
 by Daniel Rindin
 """
-def test():
-    timestampObj = timestamp.get_timestamp()
-    str = timestamp.convert_timestamp(timestampObj)
-    print(str)
 
-def test_print_timestamp():
-    timestamp.print_timestamp()
+class TestTimestampMethods(unittest.TestCase):
 
-test_print_timestamp()
-test()
+    #test for get_timestamp not needed
+
+    def test_convert_timestamp_exception(self):
+        isOk = False
+        try:
+            timestamp.convert_timestamp(None)
+        except AttributeError:
+            isOk = True
+
+        self.assertTrue(isOk)
+
+    #creates TestTimestampObj for 15.Sep.2020 (16:25) and converts it to string
+    def test_convert_timestamp_(self):
+        testTimestampObj = datetime(2020,9,15,16,25)
+        self.assertEqual(timestamp.convert_timestamp(testTimestampObj),"15.Sep.2020 (16:25)")
+    
+    def test_print_timestamp_exception(self):
+        isOk = False
+        try:
+            timestamp.print_timestamp(None)
+        except AttributeError:
+            isOk = True
+
+        self.assertTrue(isOk)
+    
+if __name__ == '__main__':
+    unittest.main()

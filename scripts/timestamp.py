@@ -13,12 +13,15 @@ def get_timestamp():
     return dateTimeObj
 
 #converts any dateTimeObject to String
-#MISSING: Exception when input is a Wrong Object
-def convert_timestamp(obj):
-    timestampStr = obj.strftime("%d.%b.%Y (%H:%M)")
-    return timestampStr
+def convert_timestamp(datetime):
+    try:
+        timestampStr = datetime.strftime("%d.%b.%Y (%H:%M)")
+        return timestampStr
+    except AttributeError:
+        raise AttributeError("Wrong Attribute: Not a datetime Object")
 
 #print current timestamp in converted Format
-def print_timestamp():
-    print("Current Timestamp:" , convert_timestamp(dateTimeObj))
+def print_timestamp(datetime):
+    str = convert_timestamp(datetime)
+    print("Current Timestamp:" , str)
 

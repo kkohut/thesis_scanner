@@ -19,7 +19,7 @@ def filter_string(text):
     filter_keywords = ["Hochschule", "angewandte", "Würzburg-Schweinfurt", "Würzburg", 
     "Schweinfurt", "Fakultät", "Bachelorarbeit", "Studiums", "Erstprüfer:", "Zweitprüfer:",
     "Eingereicht", "Dr.", "Prof."]          # words that indicate a line that needs to be filtered
-    lines = text[0].split("\n")
+    lines = text.split("\n")
     critical_lines = list()
     for line in lines:
         valid_line = True
@@ -46,7 +46,7 @@ def get_names(text):
 
     """
     m = NameDataset()
-    words = text[0].split()
+    words = text.split()
     names = list()
     for word in words:
         if m.search_last_name(word) == True:
@@ -56,3 +56,21 @@ def get_names(text):
                 name = first_name + " " + last_name
                 names.append(name)
     return names
+
+def find_author(info, authors): # tolerance?
+    """Looks for an author's name in each element of the info
+
+    Args:
+        info: list
+        authors: list
+
+    Returns:
+        author: str
+
+    """
+    for element in info:    # iterate over each line of the essential info
+        for author in authors:
+            pos = element.find(author)  # pos equals the position of the character of the string, where the substring starts
+            if pos != -1:   # pos equals -1 if the substring doesn't occur; if it doesn't equal 1, the name of the author was found
+                return author
+    return None     # if none of the expected authors occurs return None

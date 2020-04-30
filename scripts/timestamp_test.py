@@ -1,11 +1,11 @@
+"""
+this script is a unittest script to the "timsestamp.py" script 
+by Daniel Rindin
+"""
+
 from datetime import datetime
 import timestamp , unittest
 
-"""
-WORK IN PROGRESS
-this script will be a unittest script to the "timsestamp.py" script 
-by Daniel Rindin
-"""
 
 class TestTimestampMethods(unittest.TestCase):
 

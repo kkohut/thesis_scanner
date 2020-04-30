@@ -15,4 +15,16 @@ class Test(TestCase):
         image = cv2.imread(r"C:\Users\alexb\Documents\thesis-scanner\data\testAufKopf02.jpg")
         self.assertFalse(is_rotation_right(image))
 
+    def test_rotation(self):
+        image = cv2.imread(r"C:\Users\alexb\Documents\thesis-scanner\data\testAufKopf02.jpg")
+        rotatedImg = rotate_input(image)
+        cv2.imshow("Input", image)
+        cv2.imshow("Output", rotatedImg)
+        cv2.waitKey(2000)
 
+    def test_rotation2(self):
+        image = cv2.imread(r"C:\Users\alexb\Documents\thesis-scanner\data\testOhneFOlie08.jpg")
+        rotatedImg = rotate_input(image)
+        cv2.imshow("Input", image)
+        cv2.imshow("Output", rotatedImg)
+        cv2.waitKey(2000)

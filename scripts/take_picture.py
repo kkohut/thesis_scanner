@@ -8,8 +8,13 @@ by Daniel Rindin
 
 import cv2 #using opencv version 4.2.0 for python 3.8
 
+print("starting...")
+
 #creates object using the first camera listed (0)
 cam = cv2.VideoCapture(0)
+#set Resolution
+cam.set(3,1080)
+cam.set(4,720)
 #creates new window called "test"
 cv2.namedWindow("test")
 #img counter if more than one pictures are taken

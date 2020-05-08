@@ -1,10 +1,29 @@
 """This module contains several functions to analyze and categorize data from a string"""
 
+import os
+import pytesseract
 from names_dataset import NameDataset
 
 import text_extraction
 
-import pytesseract
+def get_author_list(file):
+    """Reads data about each expected thesis from a .txt file and stores it in a dictionary
+
+    Args:
+        file: str
+
+    Returns:
+        author_data: dict
+
+    """
+    author_data = {}
+    with open(file, "r") as f:
+        for line in f:
+            info_splits = line.split(",")   # seperates author and title which should be seperated by a comma
+            author = info_splits[0].strip() # removes '\n' and spaces at start and end of the string
+            title = info_splits[1].strip()
+            author_data[author] = title     # stores author and the title of his or her thesis as a key:value pair in a dictionary  
+    return author_data
 
 def filter_string(text):
     """Filters the title and name of the author in text and returns the critical lines for further analysis

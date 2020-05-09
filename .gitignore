@@ -1,3 +1,6 @@
 venv/
 .directory
 .idea
+thesis_scanner/contourtest.py
+thesis_scanner/homographytest.py
+thesis-scanner/test.py

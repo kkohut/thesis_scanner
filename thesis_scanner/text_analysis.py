@@ -6,7 +6,7 @@ from names_dataset import NameDataset
 
 import text_extraction
 
-def get_thesis_data(file):
+def read_thesis_data(file):
     """Reads data about each expected thesis from a .txt file and stores it in a dictionary
 
     Args:
@@ -19,10 +19,13 @@ def get_thesis_data(file):
     thesis_data = {}
     with open(file, "r") as f:
         for line in f:
-            info_splits = line.split(",")   # seperates author and title which should be seperated by a comma
-            author = info_splits[0].strip() # removes '\n' and spaces at start and end of the string
+            # seperates author and title which should be seperated by a comma
+            info_splits = line.split(",")   
+            # removes '\n' and spaces at start and end of the string
+            author = info_splits[0].strip() 
             title = info_splits[1].strip()
-            thesis_data[author] = title     # stores author and the title of his or her thesis as a key:value pair in a dictionary  
+            # stores author and the title of his or her thesis as a key:value pair in a dictionary  
+            thesis_data[author] = title     
     return thesis_data
 
 def filter_string(text):
@@ -35,22 +38,30 @@ def filter_string(text):
         critical_lines: list
 
     """
+
+    # words that indicate a line that needs to be filtered
     filter_keywords = ["Hochschule", "angewandte", "Würzburg-Schweinfurt", "Würzburg", 
     "Schweinfurt", "Fakultät", "Bachelorarbeit", "Studiums", "Erstprüfer:", "Zweitprüfer:",
-    "Eingereicht", "Dr.", "Prof."]          # words that indicate a line that needs to be filtered
+    "Eingereicht", "Dr.", "Prof."]
     lines = text.split("\n")
     critical_lines = list()
     for line in lines:
         valid_line = True
         words = line.split()
-        stripped_line = line.strip()        # remove spaces at start and end of the line
-        if len(stripped_line) == 0:         # if there are only spaces and the stripped line is empty
-            continue                        # don't add it to critical_lines and continue with next line
+        # remove spaces at start and end of the line
+        stripped_line = line.strip()        
+        # if there are only spaces and the stripped line is empty         
+        # don't add it to critical_lines and continue with next line
+        if len(stripped_line) == 0:
+            continue                        
         for word in words:
-            if word in filter_keywords:     # if the word is in filter_keywords, don't add it to critical lines
-                valid_line = False          # and continue with next line
+            # if the word is in filter_keywords, don't add it to critical lines
+            # and continue with next line
+            if word in filter_keywords:     
+                valid_line = False
                 break
-        if valid_line:                      # if the loop hasn't been interrupted until this point, add the line to critical_lines
+        # if the loop hasn't been interrupted until this point, add the line to critical_lines
+        if valid_line:                      
             critical_lines.append(line)
     return critical_lines
 
@@ -76,7 +87,7 @@ def get_names(text):    # currently not used
                 names.append(name)
     return names
 
-def find_thesis_data(info, thesis_data): # tolerance?
+def find_author_and_title(info, thesis_data): # tolerance still needed
     """Looks for an author's name in each element of the info
 
     Args:
@@ -87,11 +98,16 @@ def find_thesis_data(info, thesis_data): # tolerance?
         author: str
 
     """
-    for element in info:    # iterate over each line of the essential info
+                        
+    # iterate over each line of the essential info
+    for element in info:
         for author in thesis_data:
-            pos = element.find(author)  # pos equals the position of the character of the string, where the substring starts
-            if pos != -1:   # pos equals -1 if the substring doesn't occur; if it doesn't equal 1, the name of the author was found
+            # pos equals the position of the character of the string, where the substring starts
+            pos = element.find(author)
+            # pos equals -1 if the substring doesn't occur; if it doesn't equal 1, the name of the author was found
+            if pos != -1:                   
                 title = thesis_data[author]
                 del thesis_data[author]
                 return author, title
-    return None     # if none of the expected authors occurs return None    
+    # if none of the expected authors occurs return None    
+    return None

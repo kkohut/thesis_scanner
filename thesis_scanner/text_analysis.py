@@ -6,7 +6,7 @@ from names_dataset import NameDataset
 
 import text_extraction
 
-def get_author_list(file):
+def get_thesis_data(file):
     """Reads data about each expected thesis from a .txt file and stores it in a dictionary
 
     Args:
@@ -16,14 +16,14 @@ def get_author_list(file):
         author_data: dict
 
     """
-    author_data = {}
+    thesis_data = {}
     with open(file, "r") as f:
         for line in f:
             info_splits = line.split(",")   # seperates author and title which should be seperated by a comma
             author = info_splits[0].strip() # removes '\n' and spaces at start and end of the string
             title = info_splits[1].strip()
-            author_data[author] = title     # stores author and the title of his or her thesis as a key:value pair in a dictionary  
-    return author_data
+            thesis_data[author] = title     # stores author and the title of his or her thesis as a key:value pair in a dictionary  
+    return thesis_data
 
 def filter_string(text):
     """Filters the title and name of the author in text and returns the critical lines for further analysis
@@ -54,7 +54,7 @@ def filter_string(text):
             critical_lines.append(line)
     return critical_lines
 
-def get_names(text):
+def get_names(text):    # currently not used
     """Filters and returns full names from a string
 
     Args:
@@ -76,7 +76,7 @@ def get_names(text):
                 names.append(name)
     return names
 
-def find_author(info, authors): # tolerance?
+def find_thesis_data(info, thesis_data): # tolerance?
     """Looks for an author's name in each element of the info
 
     Args:
@@ -88,8 +88,10 @@ def find_author(info, authors): # tolerance?
 
     """
     for element in info:    # iterate over each line of the essential info
-        for author in authors:
+        for author in thesis_data:
             pos = element.find(author)  # pos equals the position of the character of the string, where the substring starts
             if pos != -1:   # pos equals -1 if the substring doesn't occur; if it doesn't equal 1, the name of the author was found
-                return author
-    return None     # if none of the expected authors occurs return None
+                title = thesis_data[author]
+                del thesis_data[author]
+                return author, title
+    return None     # if none of the expected authors occurs return None    

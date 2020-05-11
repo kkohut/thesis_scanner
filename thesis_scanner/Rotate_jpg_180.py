@@ -28,7 +28,7 @@ def is_rotation_right(image: Image):
     """
     text = (tess.image_to_string(image, "deu")).upper()
     print(text)
-    if "BACHELOR" in text or "MASTER" in text or "THESIS" in text:
+    if "BACHELOR" in text or "MASTER" in text or "THESIS" in text or "ARBEIT" in text:
         #print("true")
         return True
     else:

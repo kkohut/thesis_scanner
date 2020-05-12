@@ -1,30 +1,41 @@
 """This module contains several functions to analyze and categorize data from a string"""
 
 import os
-import pytesseract , text_extraction
+import pytesseract
 #from names_dataset import NameDataset -- not used
-#import text_extraction
+
+from thesis import Author
+from thesis import Thesis
 
 def read_thesis_data(file):
-    """Reads data about each expected thesis from a .txt file and stores it in a dictionary
+    """Reads the thesis data line by line from a text file and stores it in a list
 
     Args:
         file: str
 
     Returns:
-        author_data: dict
 
     """
-    thesis_data = {}
+
+    thesis_data = []
     with open(file, "r") as f:
         for line in f:
-            # seperates author and title which should be seperated by a comma
-            info_splits = line.split(",")   
+            # some names may not be unique so a counter is needed
+            authors_with_this_name = 0
+            # splits author and title which should be seperated by a comma
+            info_splits = line.split(",")
             # removes '\n' and spaces at start and end of the string
-            author = info_splits[0].strip() 
+            author_name = info_splits[0].strip()
             title = info_splits[1].strip()
-            # stores author and the title of his or her thesis as a key:value pair in a dictionary  
-            thesis_data[author] = title     
+            # iterates over each thesis object in the thesis_data list
+            for thesis in thesis_data:
+                # if the last read in author name equals the name of the author
+                # of an existing thesis, increment the counter by 1
+                if author_name == thesis.author.name:
+                    authors_with_this_name += 1
+            author = Author(name=author_name, authors_with_this_name=authors_with_this_name)
+            thesis = Thesis(author, title)
+            thesis_data.append(thesis)
     return thesis_data
 
 def filter_string(text):
@@ -87,7 +98,7 @@ def get_names(text):    # currently not used
     return names
     """
 
-def find_author_and_title(info, thesis_data): # tolerance still needed
+def find_author_and_title(info, thesis_data): # tolerance still needed / comparison of two titles if name is not unique
     """Looks for an author's name in each element of the info
 
     Args:
@@ -100,14 +111,39 @@ def find_author_and_title(info, thesis_data): # tolerance still needed
     """
                         
     # iterate over each line of the essential info
-    for element in info:
-        for author in thesis_data:
+    for line in info:
+        for thesis in thesis_data:
             # pos equals the position of the character of the string, where the substring starts
-            pos = element.find(author)
+            pos = line.find(thesis.author.name)
             # pos equals -1 if the substring doesn't occur; if it doesn't equal 1, the name of the author was found
-            if pos != -1:                   
-                title = thesis_data[author]
-                del thesis_data[author]
-                return author, title
+            if pos != -1:
+                found_thesis = thesis
+                thesis_data.remove(thesis)
+                return found_thesis
     # if none of the expected authors occurs return None    
     return None
+
+def print_thesis(thesis):
+    """Prints the data of a thesis object
+
+    Args:
+        thesis:
+
+    Returns:
+
+    """
+
+    print(f"{thesis.author.name} | {thesis.author.authors_with_this_name} | {thesis.title}")
+
+def print_still_expected_theses(thesis_data):
+    """Prints the current entries of the thesis_data list
+
+    Args:
+        thesis_data: list
+
+    Returns:
+
+    """
+
+    for thesis in thesis_data:
+        print_thesis(thesis)

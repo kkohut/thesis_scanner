@@ -1,4 +1,4 @@
-"""This module contatains several functions to handle text extraction and printing from image files"""
+"""This module contains several functions to handle text extraction and printing from image files"""
 
 import pytesseract
 try:

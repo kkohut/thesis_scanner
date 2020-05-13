@@ -1,5 +1,9 @@
 """This test module tests all the functions of the text_analysis.py module"""
 
+"""
+    By Kevin Kohut
+"""
+
 import unittest
 import os
 
@@ -22,7 +26,7 @@ class TestThesisData(unittest.TestCase):
         
         essential_info = text_analysis.filter_string(texts[0])
         cls.amount_theses_before_analysis = len(cls.thesis_data)
-        cls.found_thesis = text_analysis.find_author_and_title(essential_info, cls.thesis_data)
+        cls.found_thesis = text_analysis.find_thesis(essential_info, cls.thesis_data)
 
     def test_author(self):
         # tests if the recognized name of the author is the expected one

@@ -187,7 +187,7 @@ def main():
 	debug = True
 
 	# load image
-	image = cv2.imread("D:\\Coding\\thesis-scanner\\data\\Deckblatt5.jpg")
+	image = cv2.imread("D:\\Coding\\thesis-scanner\\data\\Deckblatt2.jpg")
 
 	# check if image is on its side
 	originalImage = turn_image(image)
@@ -217,7 +217,7 @@ def main():
 
 	if debug == True:
 		# Original Image
-		print("ORIGINAL TEXT OCR:\n")
+		print("\n\n\n ############# ORIGINAL IMAGE OCR: #############\n")
 		print(image_to_string(originalImage, lang = "deu"))
 		
 		cv2.drawContours(originalImage, contours, -1, (255, 200, 50), 1)
@@ -227,10 +227,11 @@ def main():
 		
 		
 		# Corrected Image
-		print("CORRECTED TEXT OCR:\n")
+		print("\n\n\n ############# CORRECTED IMAGE OCR: #############\n")
 		print(image_to_string(correctedImage, lang = "deu"))
 		
 		cv2.imshow('Corrected Image', correctedImage)
+		cv2.imwrite('5CorrectedImage.jpg', correctedImage)
 		cv2.waitKey()
 
 		cv2.destroyAllWindows()

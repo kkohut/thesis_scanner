@@ -217,7 +217,7 @@ def main():
 
 	if debug == True:
 		# Original Image
-		print("\n\n\n ############# ORIGINAL IMAGE OCR: #############\n")
+		print("\n\n\n ############# ORIGINAL IMAGE OCR: ##############\n")
 		print(image_to_string(originalImage, lang = "deu"))
 		
 		cv2.drawContours(originalImage, contours, -1, (255, 200, 50), 1)
@@ -227,7 +227,7 @@ def main():
 		
 		
 		# Corrected Image
-		print("\n\n\n ############# CORRECTED IMAGE OCR: #############\n")
+		print("\n\n\n ############# CORRECTED IMAGE OCR: ##############\n")
 		print(image_to_string(correctedImage, lang = "deu"))
 		
 		cv2.imshow('Corrected Image', correctedImage)

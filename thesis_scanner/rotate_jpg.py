@@ -178,22 +178,17 @@ def correct_image_rotation(originalImage, averagePitch):
 		correctedImage = mute.rotate(originalImage, angle)
 
 	#for angle in np.arange(0, 360, (averagePitch*(-1))):
-	#	originalImage = mute.rotate_bound(originalImage, angle)
+	#	 originalImage = mute.rotate_bound(originalImage, angle)
 
 	return correctedImage
 
 
-def main():
-	debug = True
-
-	# load image
-	image = cv2.imread("D:\\Coding\\thesis-scanner\\data\\Deckblatt2.jpg")
-
+def rotate_jpg(originalImage):
 	# check if image is on its side
-	originalImage = turn_image(image)
+	turnedImage = turn_image(originalImage)
 
 	# threshold the image
-	threshedImage = thresh_image(originalImage)
+	threshedImage = thresh_image(turnedImage)
 
 	# dilate the image
 	dilatedImage = dilate_image(threshedImage)
@@ -209,33 +204,6 @@ def main():
 
 	# get average pitch of the text CAREFUL, HARDCODED "IGNORE" OF THE FIRST CONTOUR BECAUSE THIS CONTOUR IS A FALSE POSITIVE
 	averagePitch = get_average_pitch(anglesInRadiansArray[1:])
-	print("Average pitch of the picture: ", averagePitch)
 
 	# correct image rotation
-	correctedImage = correct_image_rotation(originalImage, averagePitch)
-
-
-	if debug == True:
-		# Original Image
-		print("\n\n\n ############# ORIGINAL IMAGE OCR: #############\n")
-		print(image_to_string(originalImage, lang = "deu"))
-		
-		cv2.drawContours(originalImage, contours, -1, (255, 200, 50), 1)
-		
-		cv2.imshow('Original Image', originalImage)
-		cv2.waitKey()
-		
-		
-		# Corrected Image
-		print("\n\n\n ############# CORRECTED IMAGE OCR: #############\n")
-		print(image_to_string(correctedImage, lang = "deu"))
-		
-		cv2.imshow('Corrected Image', correctedImage)
-		cv2.imwrite('5CorrectedImage.jpg', correctedImage)
-		cv2.waitKey()
-
-		cv2.destroyAllWindows()
-
-
-if __name__ == '__main__':
-	main()
+	return correct_image_rotation(originalImage, averagePitch)

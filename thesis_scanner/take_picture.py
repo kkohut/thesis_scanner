@@ -42,9 +42,15 @@ def process():
             break
         elif k%256 == 32:
             # SPACE pressed
-            img_name = "opencv_frame_{}.png".format(img_counter)
-            #saves the image
-            cv2.imwrite(img_name, frame)
+            cv2.imshow('image',frame)
+            k = cv2.waitKey(0)
+            if k%256 == 27:         # wait for ESC key to exit
+                cv2.destroyWindow("image")
+            elif k%256 == ord('s'): # wait for 's' key to save and exit
+                img_name = "opencv_frame_{}.png".format(img_counter)
+                #saves the image
+                cv2.imwrite(img_name, frame)
+                cv2.destroyAllWindows()
             print("{} saved!".format(img_name))
             img_counter += 1
 

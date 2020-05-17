@@ -1,4 +1,11 @@
-"""This module contatains several functions to handle text extraction and printing from image files"""
+"""This module contains several functions to handle text extraction and printing from image files"""
+
+"""Required modules:
+	pytesseract: pip install pytesseract
+	PIL: pip install pillow
+	
+    By Kevin Kohut
+"""
 
 import pytesseract
 try:

@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 venv/
 .directory
 .idea
 testing/
+=======
+.idea
+/data
+>>>>>>> bayerlein

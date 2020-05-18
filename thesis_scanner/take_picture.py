@@ -16,15 +16,31 @@ def initialize_camera(width ,height):
     cam.set(4,height)
     return cam
 
+def keep_picture(frame, img_counter):
+    """
+    After the camera is initialized and a picture is taken, the function shows the taken picture.
+    It can be decided whether the picture is kept by pressing 's' -> the picture will be saved
+    Or take a new picture by pressing 'ESC' 
+    """
+    cv2.imshow('image',frame)
+    k = cv2.waitKey(0)
+    if k%256 == 27:         # wait for ESC key to exit
+        cv2.destroyWindow("image")
+    elif k%256 == ord('s'): # press "S" to save the picture and exit
+            img_name = "thesis{}.png".format(img_counter)
+            #saves the image
+            cv2.imwrite(img_name, frame)
+            img = cv2.imread(img_name)
+            print("{} saved!".format(img_name))
+            return img
+
+
 def process():
     print("starting...")
-
+    img = None
     cam = initialize_camera(1080,720)
-
-    #creates new window called "test"
-    cv2.namedWindow("test")
-    #img counter if more than one pictures are taken
-    img_counter = 0
+    cv2.namedWindow("test")     #creates new window called "test"
+    img_counter = 0     #img counter if more than one pictures are taken
 
     while True:
         #reads the input from the camera and shows it in the window "test"
@@ -33,29 +49,27 @@ def process():
         if not ret:
             break
 
-        #waits for a key to be pressed
-        k = cv2.waitKey(1)
+        k = cv2.waitKey(1)  #waits for a key to be pressed
 
-        if k%256 == 27:
-            # ESC pressed
+        if k%256 == 27: # ESC pressed
             print("Escape hit, closing...")
             break
-        elif k%256 == 32:
-            # SPACE pressed
-            cv2.imshow('image',frame)
-            k = cv2.waitKey(0)
-            if k%256 == 27:         # wait for ESC key to exit
-                cv2.destroyWindow("image")
-            elif k%256 == ord('s'): # wait for 's' key to save and exit
-                img_name = "opencv_frame_{}.png".format(img_counter)
-                #saves the image
-                cv2.imwrite(img_name, frame)
-                cv2.destroyAllWindows()
-            print("{} saved!".format(img_name))
+        elif k%256 == 32:   #Space pressed
+            img = keep_picture(frame,img_counter)
             img_counter += 1
+            break
 
     cam.release()
 
     cv2.destroyAllWindows()
+    if img is not None:
+        return img
 
-process()
+img = process()
+#process will return the taken image the following code shows the taken picture from the process
+if img is not None:
+    cv2.imshow("test",img)
+    cv2.waitKey(0)  #close window by pressing any key
+    cv2.destroyAllWindows()
+else:
+    print("no picture taken")

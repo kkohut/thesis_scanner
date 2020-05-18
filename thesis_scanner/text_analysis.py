@@ -2,12 +2,14 @@
 
 """Required modules:
 	pytesseract: pip install pytesseract
+	textdistance: pip install textdistance
 	
     By Kevin Kohut
 """
 
 import os
 import pytesseract
+import textdistance
 #from names_dataset import NameDataset -- not used
 
 from thesis import Author
@@ -120,21 +122,30 @@ def compare_titles(info, theses_with_same_author_names):    # no tolerance integ
 
     Returns:
         thesis: Thesis
-        or None
 
     """
 
+    #print(info)
     concat_lines = ""
+    title_similarity = {}
+    highest_similarity = 0
+    # create one concatenated string consisting of all remaining lines
     for line in info:
         concat_lines += " " + line
+    #print(concat_lines)
     for thesis in theses_with_same_author_names:
-        # str.find(substr) equals -1 if the substring doesn't occur; if it doesn't equal 1, the title was found
-        if concat_lines.find(thesis.title) != -1:
-            return thesis
-    return None
+        print(thesis.title)
+        # get similarity between the title of the currently compared thesis and the string
+        similarity = textdistance.ratcliff_obershelp(concat_lines, thesis.title)
+        # find the highest similarity
+        if similarity >= highest_similarity:
+            highest_similarity = similarity
+            thesis_with_highest_similarity = thesis
+        # add thesis and its similarity to the dictionary
+        title_similarity[thesis] = thesis.title
+    return thesis_with_highest_similarity
 
-
-def find_thesis(info, thesis_data): # tolerance still needed / comparison of two titles if name is not unique
+def find_thesis(info, thesis_data): # tolerance still needed
     """Looks for an author's name in each element of the info
 
     Args:

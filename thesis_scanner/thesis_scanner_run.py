@@ -45,11 +45,11 @@ def main():
 
 
     # Pytesseract
-    extractedText = text_extraction.extract(cv2.imread("path to saved picture"))
+    extractedText = text_analysis.extract(cv2.imread("path to saved picture"))
 
 
     # Text herausziehen
-    essentialInfo = text_analysis.filter_string(extractedText[0])
+    essentialInfo = text_analysis.filter_string(extractedText)
 
 
     # Textanalyse [Thesis Class = .author und .title] [Liste = thesis_data]

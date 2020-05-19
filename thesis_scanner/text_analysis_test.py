@@ -7,7 +7,6 @@
 import unittest
 import os
 
-import text_extraction
 import text_analysis
 from thesis import Thesis, Author
 
@@ -22,9 +21,9 @@ class TestThesisData(unittest.TestCase):
 
         rel_path = "../data/PrototypBildMitFolie.jpeg"
         abs_file_path = os.path.join(script_dir, rel_path)
-        texts = text_extraction.extract(abs_file_path)
+        text = text_analysis.extract(abs_file_path)
         
-        essential_info = text_analysis.filter_string(texts[0])
+        essential_info = text_analysis.filter_string(text)
         cls.amount_theses_before_analysis = len(cls.thesis_data)
         cls.found_thesis = text_analysis.find_thesis(essential_info, cls.thesis_data)
 

@@ -1,6 +1,7 @@
-"""This module contains several functions to analyze and categorize data from a string"""
+"""This module contains several functions for extracting, analyzing and categorizing data from a string"""
 
 """Required modules:
+    PIL: pip install pillow
 	pytesseract: pip install pytesseract
 	textdistance: pip install textdistance
 	
@@ -10,7 +11,10 @@
 import os
 import pytesseract
 import textdistance
-#from names_dataset import NameDataset -- not used
+try:
+    from PIL import Image
+except ImportError:
+    import Image
 
 from thesis import Author
 from thesis import Thesis
@@ -52,6 +56,21 @@ def read_thesis_data(file):
             thesis_data.append(thesis)
     return thesis_data
 
+def extract(img_path):
+    """Extracts the text from the images given and returns them as a list of strings
+    argument can be a string or a list of strings
+
+    Args:
+        img_path: str
+
+    Returns:
+        extr_string: str
+
+    """
+
+    extracted_string = pytesseract.image_to_string(image=Image.open(img_path), lang="deu")
+    return extracted_string
+
 def filter_string(text):
     """Filters the title and name of the author in text and returns the critical lines for further analysis
 
@@ -89,30 +108,6 @@ def filter_string(text):
             critical_lines.append(line)
     return critical_lines
 
-"""
-def get_names(text):    # currently not used 
-    #Filters and returns full names from a string
-
-    Args:
-        text: str
-
-    Returns:
-        names: list
-
-    m = NameDataset()
-    words = text.split()
-    names = list()
-    for word in words:
-        if m.search_last_name(word) == True:
-            if m.search_first_name(words[words.index(word) - 1]) == True:
-                first_name = words[words.index(word) - 1]
-                last_name = word
-                name = first_name + " " + last_name
-                names.append(name)
-    return names
-    """
-
-
 def compare_titles(info, theses_with_same_author_names):    # no tolerance integrated yet, just looking for the exact same title
     """
 
@@ -125,7 +120,6 @@ def compare_titles(info, theses_with_same_author_names):    # no tolerance integ
 
     """
 
-    #print(info)
     concat_lines = ""
     title_similarity = {}
     highest_similarity = 0
@@ -177,7 +171,32 @@ def find_thesis(info, thesis_data): # tolerance still needed
                     return found_thesis
                 thesis_data.remove(thesis)
                 return found_thesis
-    # if none of the expected authors occurs return None    
+    # if none of the expected authors occurs return None
+    for line in info:       # exception handling missing, what line.index[word] + 1 doesn't exist? !!doesn't work yet, debugging needed!!
+        words = line.split()
+        for word in words:
+            for thesis in thesis_data:
+                first_and_last_name = thesis.author.name.split()
+                first_name = first_and_last_name[0]
+                last_name = first_and_last_name[1]
+                if textdistance.hamming(first_name, word) <= 1:
+                    if textdistance.hamming(last_name, line[words.index(word) + 1]) <= 1:
+                        found_thesis = thesis
+                        thesis_data.remove(thesis)
+                        return found_thesis
+                    elif textdistance.hamming(last_name, line[words.index(word) - 1]) <= 1:
+                        found_thesis = thesis
+                        thesis_data.remove(thesis)
+                        return found_thesis
+                elif textdistance.hamming(last_name, word) <= 1:
+                    if textdistance.hamming(first_name, line[line.index(word) + 1]) <= 1:
+                        found_thesis = thesis
+                        thesis_data.remove(thesis)
+                        return found_thesis
+                    elif textdistance.hamming(first_name, line[line.index(word) - 1]) <= 1:
+                        found_thesis = thesis
+                        thesis_data.remove(thesis)
+                        return found_thesis
     return None
 
 def print_thesis(thesis):

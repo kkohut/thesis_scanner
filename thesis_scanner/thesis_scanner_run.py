@@ -1,28 +1,25 @@
 import cv2
 import os
-#import GUI     # erstmal ohne GUI zum Laufen bringen
-#import take_picture
-#import timestamp
-#import picture_quality_improve
+# import GUI
+# import take_picture
+# import timestamp
+# import picture_quality_improve
 import alignImage
 import Rotate_jpg_180
 import text_analysis
 import deadline_validity
 
-# while(true) ergänzen
+
 def main():
     # GUI starten [Immer an]
-    #GUI()
-
+    # GUI()
 
     # Bild aufnehmen
-    #image = take_picture.process()     # erstmal ohne Foto zum Laufen bringen
-    #cv2.imwrite("thesis_scanner_run_savedImage", image)
+    # image = take_picture.process()
+    # cv2.imwrite("thesis_scanner_run_savedImage", image)
 
-
-    # Timestamp speichern   # erstmal ohne TimeStamp zum Laufen bringen
-    #timeStamp = timestamp.get_timestamp()
-
+    # Timestamp speichern
+    # timeStamp = timestamp.get_timestamp()
 
     # Thesis Liste einlesen [abs_file_path = Pfad zur Thesis Liste]
     script_dir = os.path.dirname(__file__)
@@ -30,48 +27,49 @@ def main():
     abs_file_path = os.path.join(script_dir, rel_path)
     thesis_data = text_analysis.read_thesis_data(abs_file_path)
 
-
     # Bild Verbesserung
-    #rel_path = "../data/testOhneFolie10.jpg"
-    rel_path = "../data/testMitFolie08.jpg"
+    # rel_path = "../data/testOhneFolie10.jpg"
+    # rel_path = "../data/testMitFolie08.jpg"
+    rel_path = "../data/testAufKopf02.jpg"
     abs_file_path = os.path.join(script_dir, rel_path)
     image = cv2.imread(abs_file_path)
-    #image = picture_quality_improve(image)
+    # image = picture_quality_improve(image)
     cv2.imwrite("thesis_scanner_run_improvedImage.jpg", image)
-
 
     # Bild gerade ausrichten
     image = alignImage.align_image(image)
     cv2.imwrite("thesis_scanner_run_alignedImage.jpg", image)
 
-
     # Bild auf hochkante Ausrichtung prüfen
     image = Rotate_jpg_180.rotate_input(image)
     cv2.imwrite("thesis_scanner_run_uprightImage.jpg", image)
 
-
     # Pytesseract
-    extractedText = text_analysis.extract(image)
-    print(extractedText)
-
+    extracted_text = text_analysis.extract(image)
+    print("________________________________________________")
+    print("EINGELESENER TEXT:\n", extracted_text)
 
     # Text herausziehen
-    essentialInfo = text_analysis.filter_string(extractedText)
+    essential_info = text_analysis.filter_string(extracted_text)
 
-
-    # Textanalyse [Thesis Class = .author und .title] [Liste = thesis_data]
-    print("Liste vor der Analyse:\n")
+    # Textanalyse
+    print("_______________________________________________")
+    print("\nLISTE VOR DER ANALYSE:\n")
     for thesis in thesis_data:
         text_analysis.print_thesis(thesis)
-    foundThesis = text_analysis.find_thesis(essentialInfo, thesis_data)
-    print("Liste nach der Analyse:\n")
+    found_thesis = text_analysis.find_thesis(essential_info, thesis_data)
+    print("________________________________________________")
+    print("\nLISTE NACH DER ANALYSE:\n")
     for thesis in thesis_data:
         text_analysis.print_thesis(thesis)
-    #text_analysis.print_thesis(foundThesis)
+
+    print("________________________________________________")
+    print("\nERKANNTE ARBEIT:")
+    text_analysis.print_thesis(found_thesis)
 
     # Deadline auslesen
-    deadline = deadline_validity.get_deadline(extractedText)
-    #print(deadline_validity.test_validity(timeStamp))
+    # deadline = deadline_validity.get_deadline(extracted_text)
+    # print(deadline_validity.test_validity(timeStamp))
 
 
 if __name__ == "__main__":

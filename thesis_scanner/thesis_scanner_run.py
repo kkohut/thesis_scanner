@@ -1,9 +1,9 @@
 import cv2
 import os
 #import GUI     # erstmal ohne GUI zum Laufen bringen
-import take_picture
-import timestamp
-import picture_quality_improve
+#import take_picture
+#import timestamp
+#import picture_quality_improve
 import alignImage
 import Rotate_jpg_180
 import text_analysis
@@ -32,22 +32,27 @@ def main():
 
 
     # Bild Verbesserung
-    image = picture_quality_improve.__()
-    cv2.imwrite("thesis_scanner_run_improvedImage", image)
+    #rel_path = "../data/testOhneFolie10.jpg"
+    rel_path = "../data/testMitFolie08.jpg"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    image = cv2.imread(abs_file_path)
+    #image = picture_quality_improve(image)
+    cv2.imwrite("thesis_scanner_run_improvedImage.jpg", image)
 
 
     # Bild gerade ausrichten
     image = alignImage.align_image(image)
-    cv2.imwrite("thesis_scanner_run_alignedImage", image)
+    cv2.imwrite("thesis_scanner_run_alignedImage.jpg", image)
 
 
     # Bild auf hochkante Ausrichtung prüfen
     image = Rotate_jpg_180.rotate_input(image)
-    cv2.imwrite("thesis_scanner_run_uprightImage", uprightImage)
+    cv2.imwrite("thesis_scanner_run_uprightImage.jpg", image)
 
 
     # Pytesseract
-    extractedText = text_analysis.extract(cv2.imread("path to saved picture"))
+    extractedText = text_analysis.extract(image)
+    print(extractedText)
 
 
     # Text herausziehen
@@ -55,12 +60,18 @@ def main():
 
 
     # Textanalyse [Thesis Class = .author und .title] [Liste = thesis_data]
-    foundThesis = text_analysis.find_thesis(essentialInfo, thesisData)
-
+    print("Liste vor der Analyse:\n")
+    for thesis in thesis_data:
+        text_analysis.print_thesis(thesis)
+    foundThesis = text_analysis.find_thesis(essentialInfo, thesis_data)
+    print("Liste nach der Analyse:\n")
+    for thesis in thesis_data:
+        text_analysis.print_thesis(thesis)
+    #text_analysis.print_thesis(foundThesis)
 
     # Deadline auslesen
     deadline = deadline_validity.get_deadline(extractedText)
-    print(deadline_validity.test_validity(timeStamp))
+    #print(deadline_validity.test_validity(timeStamp))
 
 
 if __name__ == "__main__":

@@ -11,6 +11,7 @@
 import os
 import pytesseract
 import textdistance
+import cv2
 try:
     from PIL import Image
 except ImportError:
@@ -26,6 +27,7 @@ def read_thesis_data(file):
         file: str
 
     Returns:
+        thesis_data: list
 
     """
 
@@ -56,19 +58,19 @@ def read_thesis_data(file):
             thesis_data.append(thesis)
     return thesis_data
 
-def extract(img_path):
+def extract(img):
     """Extracts the text from the images given and returns them as a list of strings
     argument can be a string or a list of strings
 
     Args:
-        img_path: str
+        img: cv2_Image
 
     Returns:
         extr_string: str
 
     """
 
-    extracted_string = pytesseract.image_to_string(image=Image.open(img_path), lang="deu")
+    extracted_string = pytesseract.image_to_string(img, lang="deu")
     return extracted_string
 
 def filter_string(text):
@@ -126,9 +128,7 @@ def compare_titles(info, theses_with_same_author_names):    # no tolerance integ
     # create one concatenated string consisting of all remaining lines
     for line in info:
         concat_lines += " " + line
-    #print(concat_lines)
     for thesis in theses_with_same_author_names:
-        print(thesis.title)
         # get similarity between the title of the currently compared thesis and the string
         similarity = textdistance.ratcliff_obershelp(concat_lines, thesis.title)
         # find the highest similarity
@@ -140,14 +140,14 @@ def compare_titles(info, theses_with_same_author_names):    # no tolerance integ
     return thesis_with_highest_similarity
 
 def find_thesis(info, thesis_data): # tolerance still needed
-    """Looks for an author's name in each element of the info
+    """Looks for an author's name in each element of the info, if the name is unique, the thesis is found, else thesis titles have to be compared.
 
     Args:
         info: list
-        authors: list
+        thesis_data: list
 
     Returns:
-        author: str
+        found_thesis: Thesis
 
     """
                         
@@ -158,8 +158,11 @@ def find_thesis(info, thesis_data): # tolerance still needed
             pos = line.find(thesis.author.name)
             # pos equals -1 if the substring doesn't occur; if it doesn't equal 1, the name of the author was found
             if pos != -1:
-                found_thesis = thesis
-                if not thesis.author.name_unique:
+                if thesis.author.name_unique:
+                    found_thesis = thesis
+                    found_thesis.handed_in = True
+                    return found_thesis
+                else:
                     current_author = thesis.author.name
                     theses_with_same_author_names = []
                     # fill the above list with all the theses entries that need to be compared
@@ -167,10 +170,8 @@ def find_thesis(info, thesis_data): # tolerance still needed
                         if thesis.author.name == current_author:
                             theses_with_same_author_names.append(thesis)
                     found_thesis = compare_titles(info, theses_with_same_author_names)
-                    thesis_data.remove(found_thesis)
-                    return found_thesis
-                thesis_data.remove(thesis)
-                return found_thesis
+                    found_thesis.handed_in = True
+                    return found_thesis     # may be replaced by simple thesis
     # if none of the expected authors occurs return None
     for line in info:       # exception handling missing, what line.index[word] + 1 doesn't exist? !!doesn't work yet, debugging needed!!
         words = line.split()
@@ -213,7 +214,7 @@ def print_thesis(thesis):
         unique_str = "unique"
     else:
         unique_str = "not unique"
-    print(f"{thesis.author.name} | {thesis.author.authors_with_this_name} | {unique_str} | {thesis.title}")
+    print(f"{thesis.author.name} | {thesis.author.authors_with_this_name} | {unique_str} | {thesis.title} | {thesis.handed_in}")
 
 def print_still_expected_theses(thesis_data):
     """Prints the current entries of the thesis_data list

@@ -7,6 +7,7 @@ class Thesis:
     def __init__(self, author, title):
         self.author = author
         self.title = title
+        self.handed_in = False
 
 class Author:
     def __init__(self, name, authors_with_this_name, name_unique):

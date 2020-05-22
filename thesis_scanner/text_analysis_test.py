@@ -36,9 +36,9 @@ class TestThesisData(unittest.TestCase):
         self.assertEqual(self.found_thesis.title, "Entwicklung eines ganz tollen Algorithmus")
 
     def test_if_key_removed(self):
-        # tests if the author has been removed from the list after the recognition of the data and if the size of the list decremented by 1
+        # tests if the author has been removed from the list after the recognition of the data and if handed_in attribute is set to True
         self.assertNotIn(self.found_thesis.author, self.thesis_data)
-        self.assertEqual(len(self.thesis_data), self.amount_theses_before_analysis - 1)
+        self.assertEqual(self.found_thesis.handed_in, True)
 
 if __name__ == '__main__':
     unittest.main()

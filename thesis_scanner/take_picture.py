@@ -32,6 +32,8 @@ def keep_picture(frame, img_counter):
             cv2.imwrite(img_name, frame)
             img = cv2.imread(img_name)
             print("{} saved!".format(img_name))
+            img_counter += 1
+            cv2.destroyAllWindows()
             return img
 
 
@@ -56,8 +58,8 @@ def process():
             break
         elif k%256 == 32:   #Space pressed
             img = keep_picture(frame,img_counter)
-            img_counter += 1
-            break
+            if img is not None:
+                break
 
     cam.release()
 
@@ -66,7 +68,7 @@ def process():
         return img
 
 img = process()
-#process will return the taken image the following code shows the taken picture from the process
+#process will return the taken image; the following code shows the taken picture from the process
 if img is not None:
     cv2.imshow("test",img)
     cv2.waitKey(0)  #close window by pressing any key

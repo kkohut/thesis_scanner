@@ -3,7 +3,7 @@ import os
 # import GUI
 # import take_picture
 # import timestamp
-# import picture_quality_improve
+import picture_quality_improve
 import alignImage
 import Rotate_jpg_180
 import text_analysis
@@ -33,7 +33,7 @@ def main():
     rel_path = "../data/testAufKopf02.jpg"
     abs_file_path = os.path.join(script_dir, rel_path)
     image = cv2.imread(abs_file_path)
-    # image = picture_quality_improve(image)
+    image = picture_quality_improve.picture_quality_improve(image)
     cv2.imwrite("thesis_scanner_run_improvedImage.jpg", image)
 
     # Bild gerade ausrichten

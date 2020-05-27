@@ -1,8 +1,8 @@
 import cv2
 import os
 # import GUI
-# import take_picture
-# import timestamp
+import take_picture
+import timestamp
 import picture_quality_improve
 import alignImage
 import Rotate_jpg_180
@@ -15,11 +15,12 @@ def main():
     # GUI()
 
     # Bild aufnehmen
-    # image = take_picture.process()
-    # cv2.imwrite("thesis_scanner_run_savedImage", image)
+    image = take_picture.process()
+    #cv2.imwrite("thesis0.png", image)
 
     # Timestamp speichern
-    # timeStamp = timestamp.get_timestamp()
+    timeStamp = timestamp.get_timestamp()
+    timestamp.print_timestamp(timeStamp)
 
     # Thesis Liste einlesen [abs_file_path = Pfad zur Thesis Liste]
     script_dir = os.path.dirname(__file__)
@@ -28,9 +29,9 @@ def main():
     thesis_data = text_analysis.read_thesis_data(abs_file_path)
 
     # Bild Verbesserung
+    rel_path = "thesis0.png"
     # rel_path = "../data/testOhneFolie10.jpg"
-    # rel_path = "../data/testMitFolie08.jpg"
-    rel_path = "../data/testAufKopf02.jpg"
+    # rel_path = "../data/testAufKopf02.jpg"
     abs_file_path = os.path.join(script_dir, rel_path)
     image = cv2.imread(abs_file_path)
     image = picture_quality_improve.picture_quality_improve(image)
@@ -68,8 +69,8 @@ def main():
     text_analysis.print_thesis(found_thesis)
 
     # Deadline auslesen
-    # deadline = deadline_validity.get_deadline(extracted_text)
-    # print(deadline_validity.test_validity(timeStamp))
+    #deadline = deadline_validity.get_deadline(extracted_text)
+    print(deadline_validity.test_validity(timeStamp))
 
 
 if __name__ == "__main__":

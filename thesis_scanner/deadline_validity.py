@@ -1,42 +1,62 @@
-"""This module contains functions to get the deadline and check the validity of the submission"""
+"""This module contains functions to extract the date and to check its validity
+    Required modules:
+    PIL: pip install pillow
+	datetime: pip install datetime
+
+    By Melanie Willbold
+"""
 
 import re
 import datetime
 from timestamp import get_timestamp, convert_timestamp, print_timestamp
 
-def get_deadline(text):
+def get_date(extracted_strings):
+    """Filters out the date on the thesis cover
 
-    #keywords if the month has been written-out
-    date_keywords = ["Januar", "Februar", "März", "April", "Mai","Juni",
+    Args:
+        extracted_strings: list
+            contains extracted strings of the thesis cover
+
+    Returns:
+        datetime:
+            date written on the cover
+
+    """
+    MONTHS = ["Januar", "Februar", "März", "April", "Mai","Juni",
     "Juli", "August", "September", "Oktober", "November", "Dezember"]
-    #find values of the date
-    digets = re.findall('([0-9]+)', text)
-    #if three numbers were found, put them in the right order and convert to a datetime-object
-    if len(digets) > 2:
-        deadline = datetime.datetime(int(digets[2]),int(digets[1]),int(digets[0]),23,59,59)
-    #if only two numbers were found search for month in text
-    else:
-        for month in date_keywords:
-            if re.search(month, text):
-                 for i in range(0,12):
-                      if month == date_keywords[i]:
-                           #replace the value of month with a digit and convert to a datetime-object
-                           new_month = i+1
-                           deadline = datetime.datetime(int(digets[1]), new_month, int(digets[0]),23,59,59)
-                           break
-    
-    return deadline
+
+    # Find numbers in each string
+    for line in extracted_strings:
+        numbers = re.findall('([0-9]+)', line)
+        if 2 <= len(numbers) <= 3:
+            # Convert elements to make them comparable
+            numbers = [int(n) for n in numbers]
+            # Conditions to check if the numbers can be assumed as a date
+            if len(numbers) > 2 and 1 <= numbers[0] <= 31 and 1 <= numbers[1] <= 12 and numbers[2] >= 2010:
+                return datetime.datetime(numbers[2], numbers[1], numbers[0], 23, 59, 59)
+            elif 1 <= numbers[0] <= 31 and numbers[1] >= 2010:
+                # Search for month in string and compare it to list of keywords
+                for index, month in enumerate(MONTHS, 1):
+                    if month in line:
+                        return datetime.datetime(numbers[1], index, numbers[0], 23, 59, 59)
+    raise RuntimeError("kein Datum gefunden")                   
 
 def test_validity(datetime):
+    """Checks validity of the date on the cover
 
+    Args:
+        datetime:
+            extracted date
+
+    Returns:
+        
+    """
     today = get_timestamp()
+    
+    print("Ihr Abgabedatum: " + convert_timestamp(datetime))
 
-    print("Ihre Abgabefrist endet am: " + convert_timestamp(datetime))
-
-    #check if the deadline was exceeded
+    # Check if the date is valid
     if today <= datetime:
-        print("Die Abgabe war gueltig.")
+        print("True")
     else:
-        print("Die Frist wurde ueberschritten. Ihre Abgabe ist ungueltig.")
-
-            
+        print("False")

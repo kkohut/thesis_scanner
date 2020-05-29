@@ -1,5 +1,8 @@
 '''
-This Python program takes an image that is slightly turned, calculate the pitch and turn it upright.
+This Python program takes an image (containing text lines) that is turned, calculates the pitch of the text and turns it upright.
+This program does not differentiate between text that is turned upside down and text that is upright. It will only turn images in a way
+that the new image has text that is completely horizontal.
+    
 
 Required packages:
 	OpenCV: pip install opencv-python
@@ -147,3 +150,4 @@ def align_image(image):
 
 	# reverse the image rotation using the calculated pitch
 	return correct_image_alignment(image, angleInDegrees)
+

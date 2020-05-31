@@ -8,10 +8,8 @@
     By Kevin Kohut
 """
 
-import os
-import pytesseract
 import textdistance
-import cv2
+
 try:
     from PIL import Image
 except ImportError:
@@ -19,6 +17,7 @@ except ImportError:
 
 from thesis import Author
 from thesis import Thesis
+
 
 def read_thesis_data(file):
     """Reads the thesis data line by line from a text file and stores it in a list
@@ -34,6 +33,7 @@ def read_thesis_data(file):
     thesis_data = []
     with open(file, "r") as f:
         for line in f:
+            line = line.upper()
             # some names may not be unique so a counter is needed
             authors_with_this_name = 1
             # splits author and title which should be seperated by a comma
@@ -58,21 +58,6 @@ def read_thesis_data(file):
             thesis_data.append(thesis)
     return thesis_data
 
-def extract(img):
-    """Extracts the text from the images given and returns them as a list of strings
-    argument can be a string or a list of strings
-
-    Args:
-        img: cv2_Image
-
-    Returns:
-        extr_string: str
-
-    """
-
-    extracted_string = pytesseract.image_to_string(img, lang="deu")
-    return extracted_string
-
 def filter_string(text):
     """Filters the title and name of the author in text and returns the critical lines for further analysis
 
@@ -85,32 +70,33 @@ def filter_string(text):
     """
 
     # words that indicate a line that needs to be filtered
-    filter_keywords = ["Hochschule", "angewandte", "Würzburg-Schweinfurt", "Würzburg",
-                       "Schweinfurt", "Fakultät", "Bachelorarbeit", "Studiums", "Erstprüfer:", "Zweitprüfer:",
-                       "Eingereicht", "Dr.", "Prof."]
+    filter_keywords = ["HOCHSCHULE", "ANGEWANDTE", "WÜRZBURG-SCHWEINFURT", "WÜRZBURG", "SCHWEINFURT", "FAKULTÄT",
+                       "BACHELORARBEIT", "MASTERARBEIT", "STUDIUMS", "ERSTPRÜFER:", "ZWEITPRÜFER:", "EINGEREICHT",
+                       "DR.", "PROF."]
     lines = text.split("\n")
     critical_lines = list()
     for line in lines:
         valid_line = True
         words = line.split()
         # remove spaces at start and end of the line
-        stripped_line = line.strip()        
+        stripped_line = line.strip()
         # if there are only spaces and the stripped line is empty         
         # don't add it to critical_lines and continue with next line
         if len(stripped_line) == 0:
-            continue                        
+            continue
         for word in words:
             # if the word is in filter_keywords, don't add it to critical lines
             # and continue with next line
-            if word in filter_keywords:     
+            if word in filter_keywords:
                 valid_line = False
                 break
         # if the loop hasn't been interrupted until this point, add the line to critical_lines
-        if valid_line:                      
+        if valid_line:
             critical_lines.append(line)
     return critical_lines
 
-def compare_titles(info, theses_with_same_author_names):    # no tolerance integrated yet, just looking for the exact same title
+
+def compare_titles(info, theses_with_same_author_names):  # no tolerance integrated yet, just looking for the exact same title
     """
 
     Args:
@@ -139,7 +125,8 @@ def compare_titles(info, theses_with_same_author_names):    # no tolerance integ
         title_similarity[thesis] = thesis.title
     return thesis_with_highest_similarity
 
-def find_thesis(info, thesis_data): # tolerance still needed
+
+def find_thesis(info, thesis_data):
     """Looks for an author's name in each element of the info, if the name is unique, the thesis is found, else thesis titles have to be compared.
 
     Args:
@@ -150,18 +137,19 @@ def find_thesis(info, thesis_data): # tolerance still needed
         found_thesis: Thesis
 
     """
-                        
+
     # iterate over each line of the essential info
     for line in info:
         for thesis in thesis_data:
             # pos equals the position of the character of the string, where the substring starts
-            pos = line.find(thesis.author.name)
+            author_name = thesis.author.name.split()
+            swapped_author_name = author_name[1] + " " + author_name[0]
             # pos equals -1 if the substring doesn't occur; if it doesn't equal 1, the name of the author was found
-            if pos != -1:
+            # also checks if first and last name are swapped
+            if line.find(thesis.author.name) != -1 or line.find(swapped_author_name) != -1:
                 if thesis.author.name_unique:
-                    found_thesis = thesis
-                    found_thesis.handed_in = True
-                    return found_thesis
+                    thesis.handed_in = True
+                    return thesis
                 else:
                     current_author = thesis.author.name
                     theses_with_same_author_names = []
@@ -169,11 +157,12 @@ def find_thesis(info, thesis_data): # tolerance still needed
                     for thesis in thesis_data:
                         if thesis.author.name == current_author:
                             theses_with_same_author_names.append(thesis)
-                    found_thesis = compare_titles(info, theses_with_same_author_names)
-                    found_thesis.handed_in = True
-                    return found_thesis     # may be replaced by simple thesis
-    # if none of the expected authors occurs return None
-    for line in info:       # exception handling missing, what line.index[word] + 1 doesn't exist? !!doesn't work yet, debugging needed!!
+                    thesis = compare_titles(info, theses_with_same_author_names)
+                    thesis.handed_in = True
+                    return thesis
+    # if the author name doesn't occur in the exact same way as in the thesis list,
+    # search with a tolerance of 1 mistake in the first and in the last name
+    for line in info:
         words = line.split()
         for word in words:
             for thesis in thesis_data:
@@ -181,24 +170,18 @@ def find_thesis(info, thesis_data): # tolerance still needed
                 first_name = first_and_last_name[0]
                 last_name = first_and_last_name[1]
                 if textdistance.hamming(first_name, word) <= 1:
-                    if textdistance.hamming(last_name, line[words.index(word) + 1]) <= 1:
-                        found_thesis = thesis
-                        thesis_data.remove(thesis)
-                        return found_thesis
-                    elif textdistance.hamming(last_name, line[words.index(word) - 1]) <= 1:
-                        found_thesis = thesis
-                        thesis_data.remove(thesis)
-                        return found_thesis
+                    for word in words:
+                        if textdistance.hamming(last_name, word) <= 1:
+                            thesis.handed_in = True
+                            return thesis
                 elif textdistance.hamming(last_name, word) <= 1:
-                    if textdistance.hamming(first_name, line[line.index(word) + 1]) <= 1:
-                        found_thesis = thesis
-                        thesis_data.remove(thesis)
-                        return found_thesis
-                    elif textdistance.hamming(first_name, line[line.index(word) - 1]) <= 1:
-                        found_thesis = thesis
-                        thesis_data.remove(thesis)
-                        return found_thesis
+                    for word in words:
+                        if textdistance.hamming(first_name, word) <= 1:
+                            thesis.handed_in = True
+                            return thesis
+    # if none of the expected authors occurs return None
     return None
+
 
 def print_thesis(thesis):
     """Prints the data of a thesis object
@@ -214,7 +197,10 @@ def print_thesis(thesis):
         unique_str = "unique"
     else:
         unique_str = "not unique"
-    print(f"{thesis.author.name} | {thesis.author.authors_with_this_name} | {unique_str} | {thesis.title} | {thesis.handed_in}")
+    print(
+        f"{thesis.author.name:20} | {thesis.author.authors_with_this_name} | {unique_str:10} | {thesis.title:50} | "
+        f"{thesis.handed_in}")
+
 
 def print_still_expected_theses(thesis_data):
     """Prints the current entries of the thesis_data list

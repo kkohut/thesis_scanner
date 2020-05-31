@@ -41,29 +41,29 @@ def main():
     cv2.imwrite("thesis_scanner_run_alignedImage.jpg", image)
 
     # Bild auf hochkante Ausrichtung prüfen
-    image = Rotate_jpg_180.rotate_input(image)
+    image, extracted_text = Rotate_jpg_180.rotate_input(image)
     cv2.imwrite("thesis_scanner_run_uprightImage.jpg", image)
 
     # Pytesseract
-    extracted_text = text_analysis.extract(image)
-    print("________________________________________________")
+    #extracted_text = text_analysis.extract(image)
+    print("___________________________________________________________________________________________________________")
     print("EINGELESENER TEXT:\n", extracted_text)
 
     # Text herausziehen
     essential_info = text_analysis.filter_string(extracted_text)
 
     # Textanalyse
-    print("_______________________________________________")
+    print("___________________________________________________________________________________________________________")
     print("\nLISTE VOR DER ANALYSE:\n")
     for thesis in thesis_data:
         text_analysis.print_thesis(thesis)
     found_thesis = text_analysis.find_thesis(essential_info, thesis_data)
-    print("________________________________________________")
+    print("___________________________________________________________________________________________________________")
     print("\nLISTE NACH DER ANALYSE:\n")
     for thesis in thesis_data:
         text_analysis.print_thesis(thesis)
 
-    print("________________________________________________")
+    print("___________________________________________________________________________________________________________")
     print("\nERKANNTE ARBEIT:")
     text_analysis.print_thesis(found_thesis)
 

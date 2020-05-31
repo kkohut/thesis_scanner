@@ -55,14 +55,11 @@ def main():
     # Textanalyse
     print("___________________________________________________________________________________________________________")
     print("\nLISTE VOR DER ANALYSE:\n")
-    for thesis in thesis_data:
-        text_analysis.print_thesis(thesis)
+    text_analysis.print_all_theses(thesis_data)
     found_thesis = text_analysis.find_thesis(essential_info, thesis_data)
     print("___________________________________________________________________________________________________________")
     print("\nLISTE NACH DER ANALYSE:\n")
-    for thesis in thesis_data:
-        text_analysis.print_thesis(thesis)
-
+    text_analysis.print_all_theses(thesis_data)
     print("___________________________________________________________________________________________________________")
     print("\nERKANNTE ARBEIT:")
     text_analysis.print_thesis(found_thesis)

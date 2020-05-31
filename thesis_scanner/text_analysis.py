@@ -198,11 +198,11 @@ def print_thesis(thesis):
     else:
         unique_str = "not unique"
     print(
-        f"{thesis.author.name:20} | {thesis.author.authors_with_this_name} | {unique_str:10} | {thesis.title:50} | "
+        f"{thesis.author.name:20} | {thesis.author.authors_with_this_name:3} | {unique_str:10} | {thesis.title:50} | "
         f"{thesis.handed_in}")
 
 
-def print_still_expected_theses(thesis_data):
+def print_all_theses(thesis_data):
     """Prints the current entries of the thesis_data list
 
     Args:
@@ -212,5 +212,6 @@ def print_still_expected_theses(thesis_data):
 
     """
 
+    print(f"{'Name':^20} | {'Nr.'} | {'Uniqueness':^10} | {'Title':^50} | {'Handed in':^6}")
     for thesis in thesis_data:
         print_thesis(thesis)

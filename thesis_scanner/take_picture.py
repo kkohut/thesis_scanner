@@ -9,11 +9,18 @@ by Daniel Rindin
 import cv2 #using opencv version 4.2.0 for python 3.8
 from timer import Timer
 
+#Settings ( can be changed individually )
+width = 1080
+height = 720        
+timeout_limit = 30  #in seconds
+used_camera = 0     #use default camera using default backend
+#
+
 t = Timer()
 
 def initialize_camera(width ,height):
     #creates object using the first camera listed (0)
-    cam = cv2.VideoCapture(0)
+    cam = cv2.VideoCapture(used_camera)
     #set Resolution
     cam.set(3,width)
     cam.set(4,height)
@@ -26,7 +33,7 @@ def keep_picture(frame):
     Or take a new picture by pressing 'ESC' 
     """
     t.start()
-    while t.elapsed_time() < 10:
+    while t.elapsed_time() < timeout_limit:
         cv2.imshow('image',frame)
         t.print_elapsed_time()
         k = cv2.waitKey(1)
@@ -47,12 +54,12 @@ def keep_picture(frame):
 def process():
     print("starting...")
     img = None
-    cam = initialize_camera(1080,720) 
+    cam = initialize_camera(width,height) 
     cv2.namedWindow("test")     #creates new window called "test"
     
     t.start() 
 
-    while t.elapsed_time() < 10:
+    while t.elapsed_time() < timeout_limit:
         #reads the input from the camera and shows it in the window "test"
         ret, frame = cam.read()
         cv2.imshow("test", frame)

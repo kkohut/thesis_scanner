@@ -28,9 +28,9 @@ def main():
     thesis_data = text_analysis.read_thesis_data(abs_file_path)
 
     # Bild Verbesserung
-    # rel_path = "../data/testOhneFolie10.jpg"
+    rel_path = "../data/testOhneFolie10.jpg"
     # rel_path = "../data/testMitFolie08.jpg"
-    rel_path = "../data/testAufKopf02.jpg"
+    # rel_path = "../data/testAufKopf02.jpg"
     abs_file_path = os.path.join(script_dir, rel_path)
     image = cv2.imread(abs_file_path)
     image = picture_quality_improve.picture_quality_improve(image)
@@ -45,7 +45,6 @@ def main():
     cv2.imwrite("thesis_scanner_run_uprightImage.jpg", image)
 
     # Pytesseract
-    #extracted_text = text_analysis.extract(image)
     print("___________________________________________________________________________________________________________")
     print("EINGELESENER TEXT:\n", extracted_text)
 

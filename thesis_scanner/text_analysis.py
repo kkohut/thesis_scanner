@@ -9,14 +9,33 @@
 """
 
 import textdistance
-
-try:
-    from PIL import Image
-except ImportError:
-    import Image
-
 from thesis import Author
 from thesis import Thesis
+
+
+def update_thesis_data(author_name, authors_with_this_name, thesis_data):
+    """Updates the counter of authors with the same name and the uniqueness attribute of each entry
+
+    Args:
+        author_name: str
+        authors_with_this_name: int
+        thesis_data: list
+
+    Returns:
+        name_unique: boolean
+        authors_with_this_name: int
+        thesis_data: list
+    """
+    name_unique = True
+    for thesis in thesis_data:
+        # if the last read in author name equals the name of the author
+        # of an existing thesis, increment the counter by 1
+        if thesis.author.name == author_name:
+            thesis.author.authors_with_this_name += 1
+            authors_with_this_name += 1
+            name_unique = False
+            thesis.author.name_unique = name_unique
+    return name_unique, authors_with_this_name, thesis_data
 
 
 def read_thesis_data(file):
@@ -29,7 +48,6 @@ def read_thesis_data(file):
         thesis_data: list
 
     """
-
     thesis_data = []
     with open(file, "r") as f:
         for line in f:
@@ -41,22 +59,13 @@ def read_thesis_data(file):
             # removes '\n' and spaces at start and end of the string
             author_name = info_splits[0].strip()
             title = info_splits[1].strip()
-            name_unique = True
-            # iterates over each thesis object in the thesis_data list
-            for thesis in thesis_data:
-                # if the last read in author name equals the name of the author
-                # of an existing thesis, increment the counter by 1
-                if author_name == thesis.author.name:
-                    authors_with_this_name += 1
-                    name_unique = False
-                    # now all authors that were read in previously have to be set to not being unique
-                    for thesis in thesis_data:
-                        if author_name == thesis.author.name:
-                            thesis.author.name_unique = name_unique
+            name_unique, authors_with_this_name, thesis_data = update_thesis_data(
+                author_name, authors_with_this_name, thesis_data)
             author = Author(name=author_name, authors_with_this_name=authors_with_this_name, name_unique=name_unique)
             thesis = Thesis(author, title)
             thesis_data.append(thesis)
     return thesis_data
+
 
 def filter_string(text):
     """Filters the title and name of the author in text and returns the critical lines for further analysis
@@ -68,7 +77,6 @@ def filter_string(text):
         critical_lines: list
 
     """
-
     # words that indicate a line that needs to be filtered
     filter_keywords = ["HOCHSCHULE", "ANGEWANDTE", "WÜRZBURG-SCHWEINFURT", "WÜRZBURG", "SCHWEINFURT", "FAKULTÄT",
                        "BACHELORARBEIT", "MASTERARBEIT", "STUDIUMS", "ERSTPRÜFER:", "ZWEITPRÜFER:", "EINGEREICHT",
@@ -96,24 +104,32 @@ def filter_string(text):
     return critical_lines
 
 
-def compare_titles(info, theses_with_same_author_names):  # no tolerance integrated yet, just looking for the exact same title
-    """
+def compare_titles(info, thesis_data, thesis):
+    """Compares multiple titles in case a author name is not unique
 
     Args:
         info: list
-        theses_with_same_author_names: list
+        thesis_data: list
+        thesis: Thesis
 
     Returns:
-        thesis: Thesis
+        thesis_with_highest_similarity: Thesis
 
     """
 
+    current_author = thesis.author.name
+    theses_with_same_author_names = []
+    # fill the above list with all the theses entries that need to be compared
+    for thesis in thesis_data:
+        if thesis.author.name == current_author:
+            theses_with_same_author_names.append(thesis)
     concat_lines = ""
     title_similarity = {}
     highest_similarity = 0
-    # create one concatenated string consisting of all remaining lines
+    # create a single concatenated string consisting of all remaining lines
     for line in info:
         concat_lines += " " + line
+    thesis_with_highest_similarity = None
     for thesis in theses_with_same_author_names:
         # get similarity between the title of the currently compared thesis and the string
         similarity = textdistance.ratcliff_obershelp(concat_lines, thesis.title)
@@ -122,7 +138,7 @@ def compare_titles(info, theses_with_same_author_names):  # no tolerance integra
             highest_similarity = similarity
             thesis_with_highest_similarity = thesis
         # add thesis and its similarity to the dictionary
-        title_similarity[thesis] = thesis.title
+        title_similarity[thesis] = similarity
     return thesis_with_highest_similarity
 
 
@@ -137,7 +153,6 @@ def find_thesis(info, thesis_data):
         found_thesis: Thesis
 
     """
-
     # iterate over each line of the essential info
     for line in info:
         for thesis in thesis_data:
@@ -151,13 +166,7 @@ def find_thesis(info, thesis_data):
                     thesis.handed_in = True
                     return thesis
                 else:
-                    current_author = thesis.author.name
-                    theses_with_same_author_names = []
-                    # fill the above list with all the theses entries that need to be compared
-                    for thesis in thesis_data:
-                        if thesis.author.name == current_author:
-                            theses_with_same_author_names.append(thesis)
-                    thesis = compare_titles(info, theses_with_same_author_names)
+                    thesis = compare_titles(info, thesis_data, thesis)
                     thesis.handed_in = True
                     return thesis
     # if the author name doesn't occur in the exact same way as in the thesis list,
@@ -211,7 +220,6 @@ def print_all_theses(thesis_data):
     Returns:
 
     """
-
-    print(f"{'Name':^20} | {'Nr.'} | {'Uniqueness':^10} | {'Title':^50} | {'Handed in':^6}")
+    print(f"{'Autor':^20} | {'Nr.'} | {'Uniqueness':^10} | {'Title':^50} | {'Handed in':^6}")
     for thesis in thesis_data:
         print_thesis(thesis)

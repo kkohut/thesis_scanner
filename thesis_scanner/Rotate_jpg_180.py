@@ -10,12 +10,14 @@ def rotate_input(image: Image):
     :return:(rotated)image: Image
 
     '''
-    if is_rotation_right(image):
-        return image
+    rotation_right, text_original = is_rotation_right(image)
+    if rotation_right:
+        return image, text_original
     else:
         rotated_image = cv2.flip(image, -1)
+        text_rotated = tess.image_to_string(rotated_image, "deu").upper()
         #flipcode < 0: flip vertically and horizontally
-        return rotated_image
+        return rotated_image, text_rotated
 
 
 def is_rotation_right(image: Image):
@@ -28,6 +30,6 @@ def is_rotation_right(image: Image):
     """
     text = (tess.image_to_string(image, "deu")).upper()
     if "BACHELOR" in text or "MASTER" in text or "THESIS" in text or "ARBEIT" in text:
-        return True
+        return True, text
     else:
-        return False
+        return False, text

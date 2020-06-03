@@ -1,6 +1,6 @@
 # Thesis Scanner
 
-![ThesisScannerLogo](https://raw.githubusercontent.com/LucaLanzo/ThesisScannerLogo/master/ThesisScannerLogo.JPG | width=50)
+<img src="https://raw.githubusercontent.com/LucaLanzo/ThesisScannerLogo/master/ThesisScannerLogo.JPG" alt="Thesis Scanner Logo" width="50%"/>
 
 This application automatically scans and analyzes the cover sheets of bachelor and master theses using Optical Character Recognition and extracts the thesis, author and the time it has been handed in.
 

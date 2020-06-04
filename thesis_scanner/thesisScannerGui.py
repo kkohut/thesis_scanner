@@ -7,6 +7,10 @@ from kivy.uix.button import Button
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.floatlayout import FloatLayout
 
+
+from kivy.uix.camera import Camera
+from kivy.uix.boxlayout import BoxLayout
+
 import take_picture
 import thesis_scanner_run
 
@@ -16,7 +20,6 @@ Window.maximize()  # for develop process
 
 
 # Window.fullscreen = ("auto") #for final use
-
 
 class Page1(FloatLayout):
     def __init__(self, **kwargs):
@@ -37,11 +40,46 @@ class Page1(FloatLayout):
         self.add_widget(self.startButton)
 
     def pushButton_Start(self, instance):
-        take_picture.process()
-        thesis_scanner_app.page2.showScan()
+        #take_picture.process()
+        #thesis_scanner_app.page2.showScan()
+        thesis_scanner_app.CameraClass.run()
+        thesis_scanner_app.screenManager.current = "camera"
+
+class CameraClass(App): 
+    def build(self):
+        layout = BoxLayout(orientation='vertical')
+
+        # Create a camera object
+        self.cameraObject=Camera(play=True)
+        self.cameraObject.resolution = (1080,720) # Specify the resolution
+
+        # Create a button for taking photograph
+        self.camaraClick = Button(text="Take Photo")
+        self.camaraClick.size_hint=(.5, .2)
+        self.camaraClick.pos_hint={'x': .25, 'y':.75}
+
+        # bind the button's on_press to onCameraClick
+        self.camaraClick.bind(on_press=self.onCameraClick)
+
+        # add camera and button to the layout
+        layout.add_widget(self.cameraObject)
+        layout.add_widget(self.camaraClick)
+
+        # return the root widget
+        return layout
+
+    # Take the current frame of the video as the photo graph       
+    def onCameraClick(self, *args):
+        print("saving")
+        self.cameraObject.export_to_png('thesis.png')
+        self.cameraObject.play=False
         thesis_scanner_app.screenManager.current = "second"
 
-
+class Cam(FloatLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+    
+    
 class Page2(FloatLayout):
 
     def __init__(self, **kwargs):
@@ -56,7 +94,7 @@ class Page2(FloatLayout):
         self.add_widget(self.nextStepButton)
 
     def showScan(self):
-        source = "thesis.jpg"
+        source = "thesis.png"
         self.img = Image(source=source, pos_hint={'center_x': .5, 'y': .1})
         self.img.reload()  # reloads the new image from disk if user trys it again
         self.add_widget(self.img)
@@ -114,6 +152,11 @@ class ThesisScannerApp(App):
         screen.add_widget(self.page1)
         self.screenManager.add_widget(screen)
 
+        self.camera = CameraClass()
+        screen = Screen(name="camera")
+        screen.add_widget(self.camera)
+        self.screenManager.add_widget(screen)
+        
         self.page2 = Page2()
         screen = Screen(name="second")
         screen.add_widget(self.page2)

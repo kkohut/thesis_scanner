@@ -2,6 +2,7 @@
 WORK IN PROGRESS
 This script is used to open the webcam and take pictures by pressing space
 It can be exited by pressing Esc
+The script will timeout after the timeout_limit has been reached.
 Needed to acces the camera and then take a picture of the thesis, so it can be processed afterwards
 by Daniel Rindin
 """
@@ -88,8 +89,8 @@ def process():
     if img is not None:
         return img
 
-
-img = process()
+if __name__ == "__main__":
+    img = process()
 """
 #process will return the taken image; the following code shows the taken picture from the process
 if img is not None:

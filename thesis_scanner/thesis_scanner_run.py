@@ -5,7 +5,7 @@ import os
 # import timestamp
 import picture_quality_improve
 import alignImage
-import Rotate_jpg_180
+import rotate_image_180
 import text_analysis
 import deadline_validity
 
@@ -28,6 +28,7 @@ def main():
     thesis_data = text_analysis.read_thesis_data(abs_file_path)
 
     # Bild Verbesserung
+    # rel_path = "thesis.png"  # for use with GUI
     rel_path = "../data/testOhneFolie10.jpg"
     # rel_path = "../data/testMitFolie08.jpg"
     # rel_path = "../data/testAufKopf02.jpg"
@@ -41,7 +42,7 @@ def main():
     cv2.imwrite("thesis_scanner_run_alignedImage.jpg", image)
 
     # Bild auf hochkante Ausrichtung prüfen
-    image, extracted_text = Rotate_jpg_180.rotate_input(image)
+    image, extracted_text = rotate_image_180.rotate_input(image)
     cv2.imwrite("thesis_scanner_run_uprightImage.jpg", image)
 
     # Pytesseract
@@ -67,6 +68,7 @@ def main():
     # deadline = deadline_validity.get_deadline(extracted_text)
     # print(deadline_validity.test_validity(timeStamp))
     return found_thesis.author.name, found_thesis.title
+
 
 if __name__ == "__main__":
     main()

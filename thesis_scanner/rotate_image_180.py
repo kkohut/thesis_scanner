@@ -4,23 +4,23 @@ from PIL import Image
 
 
 def rotate_input(image: Image):
-    ''' Checks if the image is upside down and rotate it if required
+    """ Checks if the image is upside down and rotate it if required
 
     :param image: Image
     :return:(rotated)image: Image
 
-    '''
-    rotation_right, text_original = is_rotation_right(image)
+    """
+    rotation_right, text_original = check_rotation(image)
     if rotation_right:
         return image, text_original
     else:
-        rotated_image = cv2.flip(image, -1)
-        text_rotated = tess.image_to_string(rotated_image, "deu").upper()
-        #flipcode < 0: flip vertically and horizontally
-        return rotated_image, text_rotated
+        image_rotated = cv2.flip(image, -1) # flipcode < 0: flip vertically and horizontally = 180° rotation
+        text_rotated = tess.image_to_string(image_rotated, "deu").upper()
+
+        return image_rotated, text_rotated
 
 
-def is_rotation_right(image: Image):
+def check_rotation(image: Image):
     """ Checks if the image is upside down,
         if the image is in right direction the function returns True
         if the image is upside down the function returns False

@@ -20,6 +20,10 @@ Window.clearcolor = (1, .58, 0, 1)
 Window.maximize()  # for develop process
 # Window.fullscreen = ("auto") # for final use
 
+#Camera Settings  - by Daniel Rindin
+width = 1080
+height = 720        
+timeout_limit = 30  #in seconds
 
 # Create all Pages / Screens of the GUI
 # Every class represents one Page
@@ -52,63 +56,31 @@ class Page1(FloatLayout):
         thesis_scanner_app.screenmanager.current = "camera"
 
 
-# class CameraClass(App):
-#     def build(self):
-#         layout = BoxLayout(orientation='vertical')
-#
-#         # Create a camera object
-#         self.cameraObject=Camera(play=True)
-#         self.cameraObject.resolution = (1080,720) # Specify the resolution
-#
-#         # Create a button for taking photograph
-#         self.camaraClick = Button(text="Take Photo")
-#         self.camaraClick.size_hint=(.5, .2)
-#         self.camaraClick.pos_hint={'x': .25, 'y':.75}
-#
-#         # bind the button's on_press to onCameraClick
-#         self.camaraClick.bind(on_press=self.onCameraClick)
-#
-#         # add camera and button to the layout
-#         layout.add_widget(self.cameraObject)
-#         layout.add_widget(self.camaraClick)
-#
-#         # return the root widget
-#         return layout
-#
-#     # Take the current frame of the video as the photo graph
-#     def onCameraClick(self, *args):
-#         print("saving")
-#         self.cameraObject.export_to_png('thesis.png')
-#         self.cameraObject.play=False
-#         thesis_scanner_app.screenManager.current = "second"
-#
-# class Cam(FloatLayout):
-#     def __init__(self, **kwargs):
-#         super().__init__(**kwargs)
-
-class CameraClass(FloatLayout):
+class CameraClass(FloatLayout):     #by Daniel Rindin
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        # Create a camera object
-        self.cameraObject = Camera(play=True)
-        self.cameraObject.resolution = (1080, 720)  # Specify the resolution
+        self.openCamera()
 
         # Create a button for taking photograph
         self.camaraClick = Button(text="Take Photo")
-        self.camaraClick.size_hint = (.5, .2)
-        self.camaraClick.pos_hint = {'x': .25, 'y': .75}
-
-        # bind the button's on_press to onCameraClick
+        self.camaraClick.size_hint = (.15, .15)
+        self.camaraClick.pos_hint = {'x': .75, 'y': .1}
         self.camaraClick.bind(on_release=self.onCameraClick)
 
-        # add camera and button to the layout
+        #Create button to cancel
+        self.cancel = Button(text="Cancel", size_hint=(.15, .15), pos_hint={'x': .25, 'y': .1})
+        self.cancel.bind(on_release=self.push_button_Cancel)
+
+        # add camera and buttons to the layout (the order is important)
         self.add_widget(self.cameraObject)
+        self.add_widget(self.cancel)
         self.add_widget(self.camaraClick)
 
+    # Create a camera object (the first camera found on your system is used)
     def openCamera(self):
-        self.cameraObject = Camera(play=True)
-        self.cameraObject.resolution = (1080, 720)  # Specify the resolution
+        self.cameraObject = Camera(play=True)   #camera starts turned on
+        self.cameraObject.resolution = (width, height)  # Specify the resolution
 
     # Take the current frame of the video as the photo graph
     def onCameraClick(self, *args):
@@ -117,6 +89,9 @@ class CameraClass(FloatLayout):
         self.cameraObject.play = True
         thesis_scanner_app.page2.show_scan()
         thesis_scanner_app.screenmanager.current = "second"
+    
+    def push_button_Cancel(self, _):
+        thesis_scanner_app.screenmanager.current = "start"
 
 
 class Page2(FloatLayout):
@@ -142,7 +117,7 @@ class Page2(FloatLayout):
         thesis_scanner_app.screenmanager.current = "camera"
 
 
-    def push_button_next_step(_):
+    def push_button_next_step(self, _):
         thesis_scanner_app.page3.analyze_thesis()
         thesis_scanner_app.page3.show_analyzed_data()
         thesis_scanner_app.screenmanager.current = "third"

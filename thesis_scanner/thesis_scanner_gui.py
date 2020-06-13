@@ -98,31 +98,6 @@ class FifthScreen(Screen):
                                 "\nAnalyzed Thesis: " + str(app.ANALYZED_THESIS))
 
 
-# class SecondScreen(Screen):
-#
-#     def on_enter(self):
-#         print('enter')
-#         Clock.schedule_once(self.switch_back, 5)
-#
-#     def switch_back(self, *args):
-#         print('back')
-#       self.manager.current = "first"
-
-
-# class FirstScreen(Screen):
-#
-#     def on_enter(self):
-#         print('start threading')
-#         Clock.schedule_once(self.switch, 5)
-#
-#     def switch(self, *args):
-#         self.manager.current = "second"
-
-
-# class ScreenManagement(ScreenManager):
-# #     stop = threading.Event()
-
-
 class ThesisScannerApp(App):
     ANALYZED_NAME = ""
     ANALYZED_THESIS = ""

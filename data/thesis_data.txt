@@ -1,3 +1,9 @@
+Max Mustermann, Flusserkennung auf Luftaufnahmen durch maschinelles Lernen
 Super Mario, Entwicklung eines ganz tollen Algorithmus
+Sonja Superschlau, Verbraucher-Tracking in der Datenökonomie und algorithmische Entscheidungsfindung
+Barbara Grünwald, Prototypische Konzeptionierung einer universellen Smart Home Applikation
 Peter Schmidt, Ein weiterer toller Algorithmus
+Peter Panik, Analyse ausgewählter Konzepte der modernen Softwareentwicklung
+Lothar Lastminute, Konzeptionierung einer workflowbasierten Software für die Musikproduktion im Heimstudiosektor
 Super Mario, Der beste Algorithmus aller Zeiten
+Franziska Fendt, Analyse und Optimierung verschiedener Algorithmen zur Synchronisation von SQL-Datenbanken

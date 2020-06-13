@@ -1,0 +1,137 @@
+<ScreenManager>:
+    id: screen_manager
+    FirstScreen:
+        id: first_screen
+        name: "first"
+    SecondScreen:
+        id: second_screen
+        name: "second"
+    ThirdScreen:
+        id: third_screen
+        name: "third"
+    FourthScreen:
+        id: fourth_screen
+        name: "fourth"
+    FifthScreen:
+        id: fifth_screen
+        name: "fifth"
+
+<Label>:
+    font_size: 35
+
+<Button>:
+    font_size: 35
+    size_hint: (.25, .15)
+    pos_hint: {"center_x": 0.5, "center_y": 0.1}
+
+<LeftSideButton>:
+    pos_hint: {"center_x": 0.25, "center_y": 0.1}
+
+<RightSideButton>:
+    pos_hint: {"center_x": 0.75, "center_y": 0.1}
+
+
+<FirstScreen>:
+    id: first_screen
+    name: "first"
+
+    FloatLayout:
+        Label:
+            text: "1. Insert your thesis in the scanner\n\nPlease make sure the cover page is facing up\n\n2. press \"START\""
+            halign: "center"
+            pos_hint: {"center_x": 0.5, "center_y": 0.75}
+
+        Image:
+            source: root.source
+            size_hint: 0.4, 0.4
+            pos_hint: {"center_x": 0.5, "top": 0.6}
+
+        Button:
+            text: "START"
+            on_release:
+                app.root.current = "second"
+                root.manager.transition.direction = "left"
+
+
+#camera screen / by Daniel Rindin
+<SecondScreen>:
+    id: second_screen
+    name: "second"
+
+    FloatLayout:
+        Camera:
+            id: cam
+            play: True
+            resolution: {1080, 720}
+
+        LeftSideButton:
+            text: "Cancel"
+            on_release:
+                app.root.current = "first"
+                root.manager.transition.direction = "right"
+
+        RightSideButton:
+            text: "Take Photo"
+            on_release:
+                root.take_photo()
+                app.root.current = "third"
+                root.manager.transition.direction = "left"
+
+
+<ThirdScreen>:
+    id: third_screen
+    name: "third"
+
+    FloatLayout:
+        LeftSideButton:
+            text: "Try Again"
+            on_release:
+                app.root.current = "second"
+                root.manager.transition.direction = "right"
+
+        RightSideButton:
+            text: "Next Step"
+            on_release:
+                app.root.current = "fourth"
+                root.manager.transition.direction = "left"
+
+
+# loadingscreen
+<FourthScreen>:
+    id: fourth_screen
+    name: "fourth"
+
+    FloatLayout:
+        Image:
+            source: root.source
+            allow_stretch: True
+            anim_delay: 0.05
+            size_hint: 1,1
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+        Label:
+            id: animation
+            text: "Analyzing..."
+
+
+
+<FifthScreen>:
+    id: fifth_screen
+    name: "fifth"
+
+    FloatLayout:
+        Label:
+            id: a_name
+
+        LeftSideButton:
+            text: "Try Again"
+            on_release:
+                app.root.current = "second"
+                root.manager.transition.direction = "right"
+
+        RightSideButton:
+            text: "Save"
+            on_release:
+                app.root.current = "first"
+                root.manager.transition.direction = "left"
+

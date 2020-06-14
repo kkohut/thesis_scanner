@@ -1,14 +1,27 @@
-from datetime import time
+"""
+This module is the GUI module and contains the application logic.
+This module necessarily needs the "thesisscanner.kv" file,
+because there is the "Kvlang-Code" written, which contains the interface design of the GUI.
+The .kv file will be automatically loaded.
+
+Required packages:
+
+    Kivy with Python3.8:
+    python -m pip install --upgrade pip wheel setuptools
+    python -m pip install docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew --extra-index-url https://kivy.org/downloads/packages/simple
+    pip install kivy[base] kivy_examples --pre --extra-index-url https://kivy.org/downloads/simple/
+
+    Kivy with Python3 < 3.8:
+    python -m pip install docutils pygments pypiwin32 kivy_deps.sdl2 kivy_deps.glew
+    python -m pip install kivy
+
+    By Alexander Bayerlein
+"""
 
 import threading
-from kivy.uix.label import Label
-
-from threading import Thread
-
 import kivy
 from kivy.clock import Clock
-
-kivy.require('1.10.0')
+# kivy.require('1.10.0')
 
 from kivy.app import App
 from kivy.core.window import Window
@@ -17,6 +30,8 @@ from kivy.uix.image import Image
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 from thesis_scanner import thesis_scanner_run
+
+# TODO: implement faster load of the animation GIF or change it to a written text-animation
 
 # set windowsize to maximum or in fullscreen mode
 # Window.maximize()
@@ -34,14 +49,9 @@ class RightSideButton(Button):
     pass
 
 
-class ScreenManager(ScreenManager):
-    stop = threading.Event()
-    pass
-
-
 # start screen
 class FirstScreen(Screen):
-    source = "..\data\paper_input.png"
+    source = "..\data\paper_input.zip"
 
 
 # camera screen / by Daniel Rindin
@@ -62,7 +72,7 @@ class SecondScreen(Screen):
         self.ids.cam.export_to_png("thesis.png")
 
 
-# image control screen
+# show image screen
 class ThirdScreen(Screen):
     # path of the image
     source = "thesis.png"
@@ -79,7 +89,7 @@ class FourthScreen(Screen):
     source = "../data/loader.gif"
 
     def on_enter(self, *args):
-        t = Thread(target=self.analyze_thesis)
+        t = threading.Thread(target=self.analyze_thesis)
         t.daemon = True
         t.start()
 
@@ -94,8 +104,8 @@ class FifthScreen(Screen):
 
     def on_pre_enter(self, *args):
         app = App.get_running_app()
-        self.ids.a_name.text = ("Analyzed Name: " + str(app.ANALYZED_NAME) +
-                                "\nAnalyzed Thesis: " + str(app.ANALYZED_THESIS))
+        self.ids.a_name.text = ("Analyzed Name:\n" + str(app.ANALYZED_NAME) +
+                                "\n\n\nAnalyzed Thesis:\n" + str(app.ANALYZED_THESIS))
 
 
 class ThesisScannerApp(App):

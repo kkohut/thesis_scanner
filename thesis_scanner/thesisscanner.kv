@@ -1,3 +1,7 @@
+# This file contains the code in "Kvlang" for the "thesis_scanner_gui.py"
+# It contains the code for the interface design
+# By Alexander Bayerlein
+
 <ScreenManager>:
     id: screen_manager
     FirstScreen:
@@ -31,6 +35,7 @@
     pos_hint: {"center_x": 0.75, "center_y": 0.1}
 
 
+# start screen
 <FirstScreen>:
     id: first_screen
     name: "first"
@@ -43,9 +48,9 @@
 
         Image:
             source: root.source
+            keep_data: True
             size_hint: 0.4, 0.4
             pos_hint: {"center_x": 0.5, "top": 0.6}
-
         Button:
             text: "START"
             on_release:
@@ -53,16 +58,25 @@
                 root.manager.transition.direction = "left"
 
 
-#camera screen / by Daniel Rindin
+# camera screen / by Daniel Rindin
 <SecondScreen>:
     id: second_screen
     name: "second"
 
     FloatLayout:
+
         Camera:
             id: cam
             play: True
             resolution: {1080, 720}
+            pos_hint: {'center_x': .5, 'y': .1}
+            canvas.before:
+                PushMatrix
+                Rotate:
+                    angle: -90
+                    origin: self.center
+            canvas.after:
+                PopMatrix
 
         LeftSideButton:
             text: "Cancel"
@@ -78,6 +92,7 @@
                 root.manager.transition.direction = "left"
 
 
+# shows the image taken on screen two
 <ThirdScreen>:
     id: third_screen
     name: "third"
@@ -104,8 +119,9 @@
     FloatLayout:
         Image:
             source: root.source
-            allow_stretch: True
             anim_delay: 0.05
+            keep_data: True
+            allow_stretch: True
             size_hint: 1,1
             pos_hint: {"center_x": 0.5, "center_y": 0.5}
 
@@ -114,7 +130,7 @@
             text: "Analyzing..."
 
 
-
+# screen for the analyzed data
 <FifthScreen>:
     id: fifth_screen
     name: "fifth"

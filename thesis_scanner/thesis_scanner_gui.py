@@ -40,6 +40,8 @@ Window.fullscreen = "auto"  # closable by hitting Alt+F4
 # set the background color of the window (r, g, b, alpha) -> (alpha can be understood as opacity)
 Window.clearcolor = (1, .58, 0, 1)
 
+#Settings / by Daniel Rindin
+timeout_limit = 10  #in sec
 
 class LeftSideButton(Button):
     pass
@@ -58,8 +60,8 @@ class FirstScreen(Screen):
 class SecondScreen(Screen):
 
     def on_enter(self, *args):
-        # go back to the start screen after 30 seconds
-        Clock.schedule_once(self.switch_back, 30)
+        # go back to the start screen after timeout_limit is reached
+        Clock.schedule_once(self.switch_back, timeout_limit)
 
     def switch_back(self, _):
         # only goes back to first screen if the current screen is the camera screen

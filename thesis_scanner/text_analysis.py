@@ -142,6 +142,43 @@ def compare_titles(info, thesis_data, thesis):
     return thesis_with_highest_similarity
 
 
+def find_author_with_tolerance(info, thesis_data):
+    """
+
+    Args:
+        info: list
+        thesis_data: list
+
+    Returns:
+        thesis: Thesis
+    """
+    for line in info:
+        words = line.split()
+        for word in words:
+            for thesis in thesis_data:
+                first_and_last_name = thesis.author.name.split()
+                first_name = first_and_last_name[0]
+                last_name = first_and_last_name[1]
+                if textdistance.hamming(first_name, word) <= 1:
+                    for word in words:
+                        if textdistance.hamming(last_name, word) <= 1:
+                            return check_for_uniqueness_of_name(info, thesis_data, thesis)
+                elif textdistance.hamming(last_name, word) <= 1:
+                    for word in words:
+                        if textdistance.hamming(first_name, word) <= 1:
+                            return check_for_uniqueness_of_name(info, thesis_data, thesis)
+
+
+def check_for_uniqueness_of_name(info, thesis_data, thesis):
+    if thesis.author.name_unique:
+        thesis.handed_in = True
+        return thesis
+    else:
+        thesis = compare_titles(info, thesis_data, thesis)
+        thesis.handed_in = True
+        return thesis
+
+
 def find_thesis(info, thesis_data):
     """Looks for an author's name in each element of the info, if the name is unique, the thesis is found, else thesis titles have to be compared.
 
@@ -162,32 +199,10 @@ def find_thesis(info, thesis_data):
             # pos equals -1 if the substring doesn't occur; if it doesn't equal 1, the name of the author was found
             # also checks if first and last name are swapped
             if line.find(thesis.author.name) != -1 or line.find(swapped_author_name) != -1:
-                if thesis.author.name_unique:
-                    thesis.handed_in = True
-                    return thesis
-                else:
-                    thesis = compare_titles(info, thesis_data, thesis)
-                    thesis.handed_in = True
-                    return thesis
+                return check_for_uniqueness_of_name(info, thesis_data, thesis)
     # if the author name doesn't occur in the exact same way as in the thesis list,
     # search with a tolerance of 1 mistake in the first and in the last name
-    for line in info:
-        words = line.split()
-        for word in words:
-            for thesis in thesis_data:
-                first_and_last_name = thesis.author.name.split()
-                first_name = first_and_last_name[0]
-                last_name = first_and_last_name[1]
-                if textdistance.hamming(first_name, word) <= 1:
-                    for word in words:
-                        if textdistance.hamming(last_name, word) <= 1:
-                            thesis.handed_in = True
-                            return thesis
-                elif textdistance.hamming(last_name, word) <= 1:
-                    for word in words:
-                        if textdistance.hamming(first_name, word) <= 1:
-                            thesis.handed_in = True
-                            return thesis
+    return find_author_with_tolerance(info, thesis_data)
     # if none of the expected authors occurs return None
     return None
 

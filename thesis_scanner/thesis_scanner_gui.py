@@ -19,7 +19,8 @@ Required packages:
 """
 
 import threading
-import kivy
+import time
+# import kivy
 from kivy.clock import Clock
 # kivy.require('1.10.0')
 
@@ -31,17 +32,16 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 
 from thesis_scanner import thesis_scanner_run
 
-# TODO: implement faster load of the animation GIF or change it to a written text-animation
+# Settings / by Daniel Rindin
+timeout_limit = 10  # in sec
 
+# Settings / by Alexander Bayerlein
 # set windowsize to maximum or in fullscreen mode
 # Window.maximize()
-Window.fullscreen = "auto"  # closable by hitting Alt+F4
-
+Window.fullscreen = "auto"  # closable by pressing Alt+F4
 # set the background color of the window (r, g, b, alpha) -> (alpha can be understood as opacity)
 Window.clearcolor = (1, .58, 0, 1)
 
-#Settings / by Daniel Rindin
-timeout_limit = 10  #in sec
 
 class LeftSideButton(Button):
     pass
@@ -88,17 +88,39 @@ class ThirdScreen(Screen):
 
 # loading screen
 class FourthScreen(Screen):
-    source = "../data/loader.gif"
+    analyze_thread_running = True
 
     def on_enter(self, *args):
+        self.analyze_thread_running = True
+        t1 = threading.Thread(target=self.update_label)
         t = threading.Thread(target=self.analyze_thesis)
+        t1.daemon = True
         t.daemon = True
         t.start()
+        t1.start()
+
+    def update_label(self):
+        label = self.ids["animation_label"]
+        count = 0
+        while self.analyze_thread_running:
+            for x in range(4):
+                time.sleep(0.5)
+                label.text += "."
+            count += 1
+
+            if count == 1:
+                label.text = "Analyzing the name of the Author"
+            elif count == 2:
+                label.text = "Analyzing the date of the Thesis"
+            elif count == 3:
+                label.text = "Analyzing the name of the Thesis"
+                count = 0
 
     def analyze_thesis(self):
         app = App.get_running_app()
         app.ANALYZED_NAME, app.ANALYZED_THESIS = thesis_scanner_run.main()
         self.manager.current = "fifth"
+        self.analyze_thread_running = False
 
 
 # screen for analyzed data
@@ -106,8 +128,8 @@ class FifthScreen(Screen):
 
     def on_pre_enter(self, *args):
         app = App.get_running_app()
-        self.ids.a_name.text = ("Analyzed Name:\n" + str(app.ANALYZED_NAME) +
-                                "\n\n\nAnalyzed Thesis:\n" + str(app.ANALYZED_THESIS))
+        self.ids.a_name.text = ("Analyzed Author:\n" + str(app.ANALYZED_NAME) +
+                                "\n\n\nAnalyzed Thesis-Name:\n" + str(app.ANALYZED_THESIS))
 
 
 class ThesisScannerApp(App):

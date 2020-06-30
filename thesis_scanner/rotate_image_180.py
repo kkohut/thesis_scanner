@@ -7,20 +7,18 @@ Required packages:
 
 	OpenCV: pip install opencv-python
     Pytesseract: pip install pytesseract
-    PIL: pip install pillow
 
     By Alexander Bayerlein
 """
 
 import cv2
 import pytesseract as tess
-from PIL import Image
 
 
-def rotate_input(image: Image):
+def rotate_input(image):
     """ Checks if the image is upside down and rotate it if required
 
-    :param image: Image
+    :param image
     :return:(rotated)image: Image, text: Str
 
     """
@@ -34,7 +32,7 @@ def rotate_input(image: Image):
         return image_rotated, text_rotated
 
 
-def check_rotation(image: Image):
+def check_rotation(image):
     """ Checks if the image is upside down,
         if the image is in right direction the function returns True
         if the image is upside down the function returns False

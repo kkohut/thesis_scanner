@@ -33,3 +33,9 @@ class Timer:
     def restart(self):
         self.stop()
         self.start()
+
+    def running(self):
+        if self._start_time is None:
+            return False
+        else:
+            return True

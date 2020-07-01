@@ -13,30 +13,30 @@ from timer import Timer
 #Settings ( can be changed individually )
 width = 1080
 height = 720        
-timeout_limit = 30  #in seconds
-used_camera = 0     #use default camera using default backend
-#
+timeout_limit_keep_picture = 30  #in seconds
+timeout_limit_show_cam = 30  #in seconds
+used_camera = 0     #use default camera using default backend (=0)
 
 t = Timer()
 
-def initialize_camera(width ,height):
+def initialize_camera(used_camera):
     #creates object using the first camera listed (0)
-    cam = cv2.VideoCapture(used_camera)
+    cam = cv2.VideoCapture(used_camera,cv2.CAP_DSHOW)
     #set Resolution
     cam.set(3,width)
     cam.set(4,height)
     return cam
 
-def keep_picture(frame):
+def keep_picture(frame, timeout_limit_keep_picture):
     """
     After the camera is initialized and a picture is taken, the function shows the taken picture.
     It can be decided whether the picture is kept by pressing 's' -> the picture will be saved
     Or take a new picture by pressing 'ESC' 
     """
     t.start()
-    while t.elapsed_time() < timeout_limit:
+    while t.elapsed_time() < timeout_limit_keep_picture:
         cv2.imshow('image',frame)
-        t.print_elapsed_time()
+        #t.print_elapsed_time()
         k = cv2.waitKey(1)
         if k%256 == 27:         # wait for ESC key to exit
             cv2.destroyWindow("image")
@@ -50,25 +50,24 @@ def keep_picture(frame):
             print("{} saved!".format(img_name))
             cv2.destroyAllWindows()
             return img
-    t.stop()
+    if t.running() == True:
+        t.stop()
+    cv2.destroyWindow("image")
 
-def process():
-    print("starting...")
-    img = None
-    cam = initialize_camera(width,height) 
-    cv2.namedWindow("test")     #creates new window called "test"
-    
-    t.start() 
-
-    while t.elapsed_time() < timeout_limit:
+def show_cam(cam, timeout_limit_show_cam):
+    t.start()
+    while t.elapsed_time() < timeout_limit_show_cam:
         #reads the input from the camera and shows it in the window "test"
         ret, frame = cam.read()
-        cv2.imshow("test", frame)
+        try:
+            cv2.imshow("Thesis Scanner", frame)
+        except cv2.error:
+            t.stop()
+            raise cv2.error("Couldn't show Image")
         if not ret:
             break
         
-        t.print_elapsed_time()
-        #add Timeout!
+        #t.print_elapsed_time()
 
         k = cv2.waitKey(1)  #waits for a key to be pressed
 
@@ -77,26 +76,27 @@ def process():
             break
         elif k%256 == 32:   #Space pressed
             t.stop()
-            img = keep_picture(frame)
+            img = keep_picture(frame,timeout_limit_keep_picture)
             t.start()
             if img is not None:
                 break
-
-    t.stop()
+    if t.running() == True:
+        t.stop()
     cam.release()
+    cv2.destroyAllWindows()
 
+def process():
+    print("starting...")
+    img = None
+    cam = initialize_camera(used_camera)
+    #cv2.namedWindow("Thesis Scanner")     #creates new window called "Thesis Scanner"
+
+    show_cam(cam,timeout_limit_show_cam)
+
+    cam.release()
     cv2.destroyAllWindows()
     if img is not None:
         return img
 
 if __name__ == "__main__":
     img = process()
-"""
-#process will return the taken image; the following code shows the taken picture from the process
-if img is not None:
-    cv2.imshow("test",img)
-    cv2.waitKey(0)  #close window by pressing any key
-    cv2.destroyAllWindows()
-else:
-    print("no picture taken")
-"""

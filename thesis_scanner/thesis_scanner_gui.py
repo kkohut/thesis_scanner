@@ -40,7 +40,8 @@ timeout_limit = 10  # in sec
 # Window.maximize()
 Window.fullscreen = "auto"  # closable by pressing Alt+F4
 # set the background color of the window (r, g, b, alpha) -> (alpha can be understood as opacity)
-Window.clearcolor = (1, .58, 0, 1)
+# FHWS Colors: rgb= (236, 116, 3) or hexcode= #ec7403
+Window.clearcolor = (.925, .455, .012, 1)
 
 
 class LeftSideButton(Button):
@@ -133,11 +134,9 @@ class FifthScreen(Screen):
 
 
 class ThesisScannerApp(App):
+
     ANALYZED_NAME = ""
     ANALYZED_THESIS = ""
-
-    def on_stop(self):
-        self.root.stop.set()
 
     def build(self):
         return ScreenManager()

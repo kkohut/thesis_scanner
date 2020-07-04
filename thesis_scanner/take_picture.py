@@ -52,7 +52,7 @@ def keep_picture(frame, timeout_limit_keep_picture):
             return img
     if t.running() == True:
         t.stop()
-    cv2.destroyWindow("image")
+    #cv2.destroyWindow("image")
 
 def show_cam(cam, timeout_limit_show_cam):
     t.start()
@@ -63,7 +63,7 @@ def show_cam(cam, timeout_limit_show_cam):
             cv2.imshow("Thesis Scanner", frame)
         except cv2.error:
             t.stop()
-            raise cv2.error("Couldn't show Image")
+            raise cv2.error("Couldn't show Image - Wrong camera initialised")
         if not ret:
             break
         
@@ -77,9 +77,9 @@ def show_cam(cam, timeout_limit_show_cam):
         elif k%256 == 32:   #Space pressed
             t.stop()
             img = keep_picture(frame,timeout_limit_keep_picture)
-            t.start()
             if img is not None:
-                break
+                return img
+            t.start()
     if t.running() == True:
         t.stop()
     cam.release()
@@ -91,12 +91,19 @@ def process():
     cam = initialize_camera(used_camera)
     #cv2.namedWindow("Thesis Scanner")     #creates new window called "Thesis Scanner"
 
-    show_cam(cam,timeout_limit_show_cam)
+    img = show_cam(cam,timeout_limit_show_cam)
 
-    cam.release()
+    #cam.release()
     cv2.destroyAllWindows()
     if img is not None:
         return img
 
 if __name__ == "__main__":
     img = process()
+    if img is not None:
+        while True:
+            cv2.imshow('test', img)
+            cv2.waitKey(0)
+            break
+    else:
+        print("Kein img")

@@ -33,7 +33,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from thesis_scanner import thesis_scanner_run
 
 # Settings / by Daniel Rindin
-timeout_limit = 10  # in sec
+timeout_limit = 60  # in sec
 
 # Settings / by Alexander Bayerlein
 # set windowsize to maximum or in fullscreen mode
@@ -70,7 +70,7 @@ class SecondScreen(Screen):
             self.manager.transition.direction = "right"
 
     def take_photo(self):
-        print("saving...")
+        #print("saving...")
         self.ids.cam.export_to_png("thesis.png")
 
 

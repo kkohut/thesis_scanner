@@ -1,7 +1,7 @@
 """ 
 This Script is used to determine the timestamp when the thesis
 was submittet
-The functions bellow can bes used if needed!
+The functions bellow can be used if needed!
 by Daniel Rindin
 """
 

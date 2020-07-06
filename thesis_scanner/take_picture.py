@@ -12,10 +12,10 @@ from timer import Timer
 
 #Settings ( can be changed individually )
 width = 1080
-height = 720        
-timeout_limit_keep_picture = 30  #in seconds
-timeout_limit_show_cam = 30  #in seconds
-used_camera = 0     #use default camera using default backend (=0)
+height = 720
+used_camera = 0     #use default camera using default backend (=0)        
+timeout_limit_keep_picture = 3  #in seconds
+timeout_limit_show_cam = 3  #in seconds
 
 t = Timer()
 
@@ -39,20 +39,19 @@ def keep_picture(frame, timeout_limit_keep_picture):
         #t.print_elapsed_time()
         k = cv2.waitKey(1)
         if k%256 == 27:         # wait for ESC key to exit
-            cv2.destroyWindow("image")
             break
         elif k%256 == ord('s'): # press "S" to save the picture and exit
             t.stop()
-            img_name = "thesis.jpg"
+            img = "thesis.jpg"
             #saves the image
-            cv2.imwrite(img_name, frame)
-            img = cv2.imread(img_name)
-            print("{} saved!".format(img_name))
+            cv2.imwrite(img, frame)
+            #img = cv2.imread(img_name)
+            print("{} saved!".format(img))
             cv2.destroyAllWindows()
             return img
     if t.running() == True:
         t.stop()
-    #cv2.destroyWindow("image")
+    cv2.destroyWindow("image")
 
 def show_cam(cam, timeout_limit_show_cam):
     t.start()
@@ -78,6 +77,7 @@ def show_cam(cam, timeout_limit_show_cam):
             t.stop()
             img = keep_picture(frame,timeout_limit_keep_picture)
             if img is not None:
+                cam.release()
                 return img
             t.start()
     if t.running() == True:
@@ -94,16 +94,9 @@ def process():
     img = show_cam(cam,timeout_limit_show_cam)
 
     #cam.release()
-    cv2.destroyAllWindows()
+    #cv2.destroyAllWindows()
     if img is not None:
         return img
 
 if __name__ == "__main__":
     img = process()
-    if img is not None:
-        while True:
-            cv2.imshow('test', img)
-            cv2.waitKey(0)
-            break
-    else:
-        print("Kein img")

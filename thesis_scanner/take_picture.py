@@ -12,10 +12,10 @@ from timer import Timer
 
 #Settings ( can be changed individually )
 width = 1080
-height = 720        
-timeout_limit_keep_picture = 30  #in seconds
-timeout_limit_show_cam = 30  #in seconds
-used_camera = 0     #use default camera using default backend (=0)
+height = 720
+used_camera = 0     #use default camera using default backend (=0)        
+timeout_limit_keep_picture = 3  #in seconds
+timeout_limit_show_cam = 3  #in seconds
 
 t = Timer()
 
@@ -39,15 +39,14 @@ def keep_picture(frame, timeout_limit_keep_picture):
         #t.print_elapsed_time()
         k = cv2.waitKey(1)
         if k%256 == 27:         # wait for ESC key to exit
-            cv2.destroyWindow("image")
             break
         elif k%256 == ord('s'): # press "S" to save the picture and exit
             t.stop()
-            img_name = "thesis.jpg"
+            img = "thesis.jpg"
             #saves the image
-            cv2.imwrite(img_name, frame)
-            img = cv2.imread(img_name)
-            print("{} saved!".format(img_name))
+            cv2.imwrite(img, frame)
+            #img = cv2.imread(img_name)
+            print("{} saved!".format(img))
             cv2.destroyAllWindows()
             return img
     if t.running() == True:
@@ -63,7 +62,7 @@ def show_cam(cam, timeout_limit_show_cam):
             cv2.imshow("Thesis Scanner", frame)
         except cv2.error:
             t.stop()
-            raise cv2.error("Couldn't show Image")
+            raise cv2.error("Couldn't show Image - Wrong camera initialised")
         if not ret:
             break
         
@@ -77,9 +76,10 @@ def show_cam(cam, timeout_limit_show_cam):
         elif k%256 == 32:   #Space pressed
             t.stop()
             img = keep_picture(frame,timeout_limit_keep_picture)
-            t.start()
             if img is not None:
-                break
+                cam.release()
+                return img
+            t.start()
     if t.running() == True:
         t.stop()
     cam.release()
@@ -91,10 +91,10 @@ def process():
     cam = initialize_camera(used_camera)
     #cv2.namedWindow("Thesis Scanner")     #creates new window called "Thesis Scanner"
 
-    show_cam(cam,timeout_limit_show_cam)
+    img = show_cam(cam,timeout_limit_show_cam)
 
-    cam.release()
-    cv2.destroyAllWindows()
+    #cam.release()
+    #cv2.destroyAllWindows()
     if img is not None:
         return img
 

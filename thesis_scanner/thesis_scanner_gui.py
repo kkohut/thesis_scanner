@@ -77,8 +77,6 @@ class SecondScreen(Screen):
 
 # show image screen
 class ThirdScreen(Screen):
-    # path of the image
-    source = "thesis.png"
 
     def on_pre_enter(self, *args):
         source = "thesis.png"
@@ -90,32 +88,36 @@ class ThirdScreen(Screen):
 # loading screen
 class FourthScreen(Screen):
     analyze_thread_running = True
+    count = 0
 
     def on_enter(self, *args):
         self.analyze_thread_running = True
-        t1 = threading.Thread(target=self.update_label)
-        t = threading.Thread(target=self.analyze_thesis)
-        t1.daemon = True
-        t.daemon = True
-        t.start()
-        t1.start()
+
+        label_thread = threading.Thread(target=self.update_label)
+        analyzing_thread = threading.Thread(target=self.analyze_thesis)
+
+        label_thread.daemon = True
+        analyzing_thread.daemon = True
+
+        analyzing_thread.start()
+        label_thread.start()
 
     def update_label(self):
         label = self.ids["animation_label"]
-        count = 0
+
         while self.analyze_thread_running:
             for x in range(4):
                 time.sleep(0.5)
                 label.text += "."
-            count += 1
+            self.count += 1
 
-            if count == 1:
+            if self.count == 1:
                 label.text = "Analyzing the name of the Author"
-            elif count == 2:
+            elif self.count == 2:
                 label.text = "Analyzing the date of the Thesis"
-            elif count == 3:
+            elif self.count == 3:
                 label.text = "Analyzing the name of the Thesis"
-                count = 0
+                self.count = 0
 
     def analyze_thesis(self):
         app = App.get_running_app()

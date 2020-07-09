@@ -59,7 +59,7 @@ def dilate_image(threshedImage):
 	This ensures that the following contour detection won't only detect single letters but rather full lines of text.
 	'''
 
-	return cv2.dilate(threshedImage, get_kernel(1, 12))
+	return cv2.dilate(threshedImage, get_kernel(1, 15))
 
 
 def erode_image(dilatedImage):
@@ -85,14 +85,14 @@ def find_widest_contour(erodedImage):
 
 	# find widest contour
 	for contour in contours:
-		_, _, newContourWidth, newContourHeight = cv2.boundingRect(contour)
-		_, _, oldContourWidth, oldContourHeight = cv2.boundingRect(widestContour)
+		_, _, jcontourWidth, jcontourHeight = cv2.boundingRect(contour)
+		_, _, icontourWidth, icontourHeight = cv2.boundingRect(widestContour)
 
 		# Disregard contours which height is far greater than its width
-		if newContourHeight > (newContourWidth/100*20):
+		if jcontourHeight > (jcontourWidth/100*20):
 			continue
 		# The widestContour has to have a greater width than the last widest
-		elif newContourWidth >= oldContourWidth:
+		elif jcontourWidth > icontourWidth:
 			widestContour = contour
 		else:
 			continue
@@ -109,7 +109,8 @@ def do_PCA(contour):
 	PCA is perfect for reducing dimensionalities. Our sets of pixel are scattered over a coordinate system 
 	in a two dimensional manner, while the PCA line is one dimensional.
 	'''
-	
+	# Create an empty array for the pixels
+	# len(contour) amount of pixels = row; 2 x and y coordinate = columns
 	dataPoints = np.empty((len(contour), 2), dtype = np.float64)
 
 	for i, dp in enumerate(dataPoints):

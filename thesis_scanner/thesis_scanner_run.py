@@ -50,19 +50,19 @@ def main():
     print("EINGELESENER TEXT:\n", extracted_text)
 
     # Text herausziehen
-    essential_info = text_analysis.filter_string(extracted_text)
+    critical_lines = text_analysis.filter_string(extracted_text)
 
     # Textanalyse
     print("___________________________________________________________________________________________________________")
     print("\nLISTE VOR DER ANALYSE:\n")
     text_analysis.print_all_theses(thesis_data)
-    found_thesis = text_analysis.find_thesis(essential_info, thesis_data)
+    found_thesis = text_analysis.find_thesis(critical_lines, thesis_data)
     print("___________________________________________________________________________________________________________")
     print("\nLISTE NACH DER ANALYSE:\n")
     text_analysis.print_all_theses(thesis_data)
     print("___________________________________________________________________________________________________________")
     print("\nERKANNTE ARBEIT:")
-    text_analysis.print_thesis(found_thesis)
+    text_analysis.print_thesis(found_thesis, thesis_data)
 
     # Deadline auslesen
     # deadline = deadline_validity.get_deadline(extracted_text)

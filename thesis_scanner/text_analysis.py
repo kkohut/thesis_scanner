@@ -54,7 +54,7 @@ def read_thesis_data(file):
             line = line.upper()
             # some names may not be unique so a counter is needed
             authors_with_this_name = 1
-            # splits author and title which should be seperated by a comma
+            # splits author and title which should be seperated by a comma in the text file
             info_splits = line.split(",")
             # removes '\n' and spaces at start and end of the string
             author_name = info_splits[0].strip()
@@ -82,7 +82,7 @@ def filter_string(text):
                        "BACHELORARBEIT", "MASTERARBEIT", "STUDIUMS", "ERSTPRÜFER:", "ZWEITPRÜFER:", "EINGEREICHT",
                        "DR.", "PROF."]
     lines = text.split("\n")
-    critical_lines = list()
+    critical_lines = []
     for line in lines:
         valid_line = True
         words = line.split()
@@ -142,56 +142,57 @@ def compare_titles(info, thesis_data, thesis):
     return thesis_with_highest_similarity
 
 
-def find_author_with_tolerance(info, thesis_data):
+def find_thesis_with_tolerance(critical_lines, thesis_data):
     """
 
     Args:
-        info: list
+        critical_lines: list
         thesis_data: list
 
     Returns:
         thesis: Thesis
     """
-    for line in info:
+    for line in critical_lines:
         words = line.split()
         for word in words:
             for thesis in thesis_data:
                 first_and_last_name = thesis.author.name.split()
                 first_name = first_and_last_name[0]
                 last_name = first_and_last_name[1]
+                # check if first and / or last name contain a spelling mistake
                 if textdistance.hamming(first_name, word) <= 1:
                     for word in words:
                         if textdistance.hamming(last_name, word) <= 1:
-                            return check_for_uniqueness_of_name(info, thesis_data, thesis)
+                            return check_for_uniqueness_of_name(critical_lines, thesis_data, thesis)
                 elif textdistance.hamming(last_name, word) <= 1:
                     for word in words:
                         if textdistance.hamming(first_name, word) <= 1:
-                            return check_for_uniqueness_of_name(info, thesis_data, thesis)
+                            return check_for_uniqueness_of_name(critical_lines, thesis_data, thesis)
 
 
-def check_for_uniqueness_of_name(info, thesis_data, thesis):
+def check_for_uniqueness_of_name(critical_lines, thesis_data, thesis):
     if thesis.author.name_unique:
         thesis.handed_in = True
         return thesis
     else:
-        thesis = compare_titles(info, thesis_data, thesis)
+        thesis = compare_titles(critical_lines, thesis_data, thesis)
         thesis.handed_in = True
         return thesis
 
 
-def find_thesis(info, thesis_data):
+def find_thesis(critical_lines, thesis_data):
     """Looks for an author's name in each element of the info, if the name is unique, the thesis is found, else thesis titles have to be compared.
 
     Args:
-        info: list
+        critical_lines: list
         thesis_data: list
 
     Returns:
         found_thesis: Thesis
 
     """
-    # iterate over each line of the essential info
-    for line in info:
+    # iterate over each of the critical lines
+    for line in critical_lines:
         for thesis in thesis_data:
             # pos equals the position of the character of the string, where the substring starts
             author_name = thesis.author.name.split()
@@ -199,19 +200,20 @@ def find_thesis(info, thesis_data):
             # pos equals -1 if the substring doesn't occur; if it doesn't equal 1, the name of the author was found
             # also checks if first and last name are swapped
             if line.find(thesis.author.name) != -1 or line.find(swapped_author_name) != -1:
-                return check_for_uniqueness_of_name(info, thesis_data, thesis)
+                return check_for_uniqueness_of_name(critical_lines, thesis_data, thesis)
     # if the author name doesn't occur in the exact same way as in the thesis list,
-    # search with a tolerance of 1 mistake in the first and in the last name
-    return find_author_with_tolerance(info, thesis_data)
+    # search with a tolerance of 1 mistake each in the first and in the last name
+    return find_thesis_with_tolerance(critical_lines, thesis_data)
     # if none of the expected authors occurs return None
     return None
 
 
-def print_thesis(thesis):
+def print_thesis(thesis, thesis_data):
     """Prints the data of a thesis object
 
     Args:
-        thesis:
+        thesis: Thesis
+        thesis_data: list
 
     Returns:
 
@@ -222,8 +224,8 @@ def print_thesis(thesis):
     else:
         unique_str = "not unique"
     print(
-        f"{thesis.author.name:20} | {thesis.author.authors_with_this_name:3} | {unique_str:10} | {thesis.title:95} | "
-        f"{thesis.handed_in}")
+        f"{thesis_data.index(thesis) + 1:3} | {thesis.author.name:20} | {thesis.author.authors_with_this_name:^3} |"
+        f" {unique_str:10} | {thesis.title:95} | {thesis.handed_in}")
 
 
 def print_all_theses(thesis_data):
@@ -235,6 +237,6 @@ def print_all_theses(thesis_data):
     Returns:
 
     """
-    print(f"{'Autor':^20} | {'Nr.'} | {'Uniqueness':^10} | {'Title':^95} | {'Handed in':^6}")
+    print(f"{'#':>3} | {'Author':^20} | {'Nr.'} | {'Uniqueness':^10} | {'Title':^95} | {'Handed in':^6}")
     for thesis in thesis_data:
-        print_thesis(thesis)
+        print_thesis(thesis, thesis_data)

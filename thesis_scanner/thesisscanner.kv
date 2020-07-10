@@ -3,21 +3,15 @@
 # By Alexander Bayerlein
 
 <ScreenManager>:
-    id: screen_manager
     FirstScreen:
-        id: first_screen
         name: "first"
     SecondScreen:
-        id: second_screen
         name: "second"
     ThirdScreen:
-        id: third_screen
         name: "third"
     FourthScreen:
-        id: fourth_screen
         name: "fourth"
     FifthScreen:
-        id: fifth_screen
         name: "fifth"
 
 <Label>:
@@ -26,18 +20,17 @@
 <Button>:
     font_size: 35
     size_hint: (.25, .15)
-    pos_hint: {"center_x": 0.5, "center_y": 0.1}
+    pos_hint: {"center_x": 0.5, "y": 0.02}
 
 <LeftSideButton>:
-    pos_hint: {"center_x": 0.25, "center_y": 0.1}
+    pos_hint: {"center_x": 0.25, "y": 0.02}
 
 <RightSideButton>:
-    pos_hint: {"center_x": 0.75, "center_y": 0.1}
+    pos_hint: {"center_x": 0.75, "y": 0.02}
 
 
 # start screen
 <FirstScreen>:
-    id: first_screen
     name: "first"
 
     FloatLayout:
@@ -60,7 +53,6 @@
 
 # camera screen / by Daniel Rindin
 <SecondScreen>:
-    id: second_screen
     name: "second"
 
     FloatLayout:
@@ -94,10 +86,15 @@
 
 # shows the image taken on screen two
 <ThirdScreen>:
-    id: third_screen
     name: "third"
 
     FloatLayout:
+        Image:
+            id: image
+            source: root.source
+            size_hint: 1, 0.9
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
         LeftSideButton:
             text: "Try Again"
             on_release:
@@ -113,7 +110,6 @@
 
 # loadingscreen
 <FourthScreen>:
-    id: fourth_screen
     name: "fourth"
 
     FloatLayout:
@@ -124,7 +120,6 @@
 
 # screen for the analyzed data
 <FifthScreen>:
-    id: fifth_screen
     name: "fifth"
 
     FloatLayout:

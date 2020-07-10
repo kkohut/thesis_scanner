@@ -27,7 +27,6 @@ from kivy.clock import Clock
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.uix.button import Button
-from kivy.uix.image import Image
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 from thesis_scanner import thesis_scanner_run
@@ -71,18 +70,17 @@ class SecondScreen(Screen):
             self.manager.transition.direction = "right"
 
     def take_photo(self):
-        #print("saving...")
+        # print("saving...")
         self.ids.cam.export_to_png("thesis.png")
 
 
 # show image screen
 class ThirdScreen(Screen):
+    source = "thesis.png"
 
     def on_pre_enter(self, *args):
-        source = "thesis.png"
-        self.img = Image(source=source, pos_hint={'center_x': .5, 'y': .1})
-        self.img.reload()
-        self.add_widget(self.img)
+        img = self.ids["image"]
+        img.reload()
 
 
 # loading screen
@@ -93,11 +91,11 @@ class FourthScreen(Screen):
     def on_enter(self, *args):
         self.analyze_thread_running = True
 
-        label_thread = threading.Thread(target=self.update_label)
         analyzing_thread = threading.Thread(target=self.analyze_thesis)
+        label_thread = threading.Thread(target=self.update_label)
 
-        label_thread.daemon = True
         analyzing_thread.daemon = True
+        label_thread.daemon = True
 
         analyzing_thread.start()
         label_thread.start()
@@ -121,7 +119,7 @@ class FourthScreen(Screen):
 
     def analyze_thesis(self):
         app = App.get_running_app()
-        app.ANALYZED_NAME, app.ANALYZED_THESIS = thesis_scanner_run.main()
+        app.analyzed_name, app.analyzed_thesis = thesis_scanner_run.main()
         self.manager.current = "fifth"
         self.analyze_thread_running = False
 
@@ -131,14 +129,13 @@ class FifthScreen(Screen):
 
     def on_pre_enter(self, *args):
         app = App.get_running_app()
-        self.ids.a_name.text = ("Analyzed Author:\n" + str(app.ANALYZED_NAME) +
-                                "\n\n\nAnalyzed Thesis-Name:\n" + str(app.ANALYZED_THESIS))
+        self.ids.a_name.text = ("Analyzed Author:\n" + str(app.analyzed_name) +
+                                "\n\n\nAnalyzed Thesis-Name:\n" + str(app.analyzed_thesis))
 
 
 class ThesisScannerApp(App):
-
-    ANALYZED_NAME = ""
-    ANALYZED_THESIS = ""
+    analyzed_name = ""
+    analyzed_thesis = ""
 
     def build(self):
         return ScreenManager()

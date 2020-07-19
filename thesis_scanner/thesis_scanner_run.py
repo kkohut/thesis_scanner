@@ -31,17 +31,20 @@ def main():
 
     # Bild Verbesserung
     # rel_path = "thesis.png"  # for use with GUI
-    rel_path = "../data/testOhneFolie10.jpg"
+    rel_path = "../data/Test_GruenwaldB.jpeg"
     # rel_path = "../data/testMitFolie08.jpg"
     # rel_path = "../data/testAufKopf02.jpg"
     abs_file_path = os.path.join(script_dir, rel_path)
     image = cv2.imread(abs_file_path)
-    image = picture_quality_improve.picture_quality_improve(image)
-    cv2.imwrite("thesis_scanner_run_improvedImage.jpg", image)
+
 
     # Bild gerade ausrichten
     image = alignImage.align_image(image)
     cv2.imwrite("thesis_scanner_run_alignedImage.jpg", image)
+
+    # Bild Verbessern
+    image = picture_quality_improve.picture_quality_improve(image)
+    cv2.imwrite("thesis_scanner_run_improvedImage.jpg", image)
 
     # Bild auf hochkante Ausrichtung prüfen
     image, extracted_text = rotate_image_180.rotate_input(image)

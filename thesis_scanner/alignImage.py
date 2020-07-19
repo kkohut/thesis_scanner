@@ -78,7 +78,7 @@ def find_widest_contour(erodedImage):
 	To save memory, time and optimize the pitch analysis, only the widest contour will be returned.
 	Contours that are too great will be eliminated as only contours that represent text lines are wanted.
 	'''
-	
+	# find all contours
 	contours, _ = cv2.findContours(erodedImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
 	widestContour = contours[0]

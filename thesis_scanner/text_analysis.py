@@ -227,15 +227,15 @@ def find_thesis_with_tolerance(critical_lines, thesis_data):
                 first_and_last_name = thesis.author.name.split()
                 first_name = first_and_last_name[0]
                 last_name = first_and_last_name[1]
-                    # check if first and / or last name contain a spelling mistake
-                    if textdistance.hamming(first_name, word) <= 1:
-                        for w in words:
-                            if textdistance.hamming(last_name, w) <= 1:
-                                return check_for_uniqueness_of_name(critical_lines, thesis_data, thesis)
-                    elif textdistance.hamming(last_name, word) <= 1:
-                        for w in words:
-                            if textdistance.hamming(first_name, w) <= 1:
-                                return check_for_uniqueness_of_name(critical_lines, thesis_data, thesis)
+                # check if first and / or last name contain a spelling mistake
+                if textdistance.hamming(first_name, word) <= 1:
+                    for w in words:
+                        if textdistance.hamming(last_name, w) <= 1:
+                            return check_for_uniqueness_of_name(critical_lines, thesis_data, thesis)
+                elif textdistance.hamming(last_name, word) <= 1:
+                    for w in words:
+                        if textdistance.hamming(first_name, w) <= 1:
+                            return check_for_uniqueness_of_name(critical_lines, thesis_data, thesis)
 
 
 def print_thesis(thesis, thesis_data):

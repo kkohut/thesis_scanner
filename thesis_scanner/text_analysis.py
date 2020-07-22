@@ -9,6 +9,9 @@
 """
 
 import textdistance
+
+import thesis_similarity
+import date_validity
 from thesis import Author
 from thesis import Thesis
 
@@ -52,18 +55,29 @@ def read_thesis_data(file):
     with open(file, "r") as f:
         for line in f:
             line = line.upper()
-            # some names may not be unique so a counter is needed
-            authors_with_this_name = 1
             # splits author and title which should be seperated by a comma in the text file
             info_splits = line.split(",")
             # removes '\n' and spaces at start and end of the string
             author_name = info_splits[0].strip()
             title = info_splits[1].strip()
+            # some names may not be unique so a counter is needed
+            authors_with_this_name = 1
             name_unique, authors_with_this_name, thesis_data = update_thesis_data(
                 author_name, authors_with_this_name, thesis_data)
-            author = Author(name=author_name, authors_with_this_name=authors_with_this_name, name_unique=name_unique)
-            thesis = Thesis(author, title)
-            thesis_data.append(thesis)
+            new_author = Author(name=author_name, authors_with_this_name=authors_with_this_name, name_unique=name_unique)
+            new_thesis = Thesis(new_author, title)
+            duplicate_thesis = False
+            if len(thesis_data) == 0:
+                thesis_data.append(new_thesis)
+            else:
+                # check if the list already contains this exact thesis
+                for thesis in thesis_data:
+                    if new_thesis.title == thesis.title and new_author.name == thesis.author.name:
+                        duplicate_thesis = True
+                if duplicate_thesis:
+                    continue
+                # if it's a new entry, add it to thesis_data
+                thesis_data.append(new_thesis)
     return thesis_data
 
 
@@ -132,7 +146,8 @@ def compare_titles(info, thesis_data, thesis):
     thesis_with_highest_similarity = None
     for thesis in theses_with_same_author_names:
         # get similarity between the title of the currently compared thesis and the string
-        similarity = textdistance.ratcliff_obershelp(concat_lines, thesis.title)
+        similarity = thesis_similarity.cosine_similarity(thesis_similarity.string2vec(thesis.title),
+                                                         thesis_similarity.string2vec(concat_lines), 5)
         # find the highest similarity
         if similarity >= highest_similarity:
             highest_similarity = similarity
@@ -225,7 +240,7 @@ def print_thesis(thesis, thesis_data):
         unique_str = "not unique"
     print(
         f"{thesis_data.index(thesis) + 1:3} | {thesis.author.name:20} | {thesis.author.authors_with_this_name:^3} |"
-        f" {unique_str:10} | {thesis.title:95} | {thesis.handed_in}")
+        f" {unique_str:10} | {thesis.title:95} | {str(thesis.handed_in):^9} | {thesis.date_handed_in}")
 
 
 def print_all_theses(thesis_data):
@@ -237,6 +252,7 @@ def print_all_theses(thesis_data):
     Returns:
 
     """
-    print(f"{'#':>3} | {'Author':^20} | {'Nr.'} | {'Uniqueness':^10} | {'Title':^95} | {'Handed in':^6}")
+    print(f"{'#':>3} | {'Author':^20} | {'Nr.'} | {'Uniqueness':^10} | {'Title':^95} | {'Handed in':^6} | "
+          f"{'Date handed in'}")
     for thesis in thesis_data:
         print_thesis(thesis, thesis_data)

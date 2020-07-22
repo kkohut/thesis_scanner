@@ -10,6 +10,7 @@ class Thesis:
         self.author = author
         self.title = title
         self.handed_in = False
+        self.date_handed_in = None
 
 
 class Author:

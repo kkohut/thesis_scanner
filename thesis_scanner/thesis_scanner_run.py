@@ -10,6 +10,7 @@ import alignImage
 import rotate_image_180
 import text_analysis
 import deadline_validity
+import date_validity
 
 
 def main():
@@ -62,6 +63,7 @@ def main():
     print("\nLISTE VOR DER ANALYSE:\n")
     text_analysis.print_all_theses(thesis_data)
     found_thesis = text_analysis.find_thesis(critical_lines, thesis_data)
+    found_thesis.date_handed_in = date_validity.get_date(extracted_text.splitlines(), found_thesis.title)
     print("___________________________________________________________________________________________________________")
     print("\nLISTE NACH DER ANALYSE:\n")
     text_analysis.print_all_theses(thesis_data)

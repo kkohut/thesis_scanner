@@ -28,8 +28,8 @@ def get_date(extracted_strings, thesis_title):
 
     """
     # Keywords for german date
-    MONTHS = ["Januar", "Februar", "März", "April", "Mai","Juni",
-    "Juli", "August", "September", "Oktober", "November", "Dezember"]
+    MONTHS = ["JANUAR", "FEBRUAR", "MÄRZ", "APRIL", "MAI", "JUNI",
+    "JULI", "AUGUST", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DEZEMBER"]
 
     # detect the language of the thesis
     language = detect(thesis_title)

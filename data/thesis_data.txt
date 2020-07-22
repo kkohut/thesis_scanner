@@ -17,4 +17,4 @@ Franziska Fendt, Analyse und Optimierung verschiedener Algorithmen zur Synchroni
 Hanna Huber, Attempto Controlled English für Amazon Alexa
 Lothar Lastminute, Konzeptionierung einer workflowbasierten Software für die Musikproduktion im Heimstudiosektor
 Max Mustermann, Flusserkennung auf Luftaufnahmen durch maschinelles Lernen
-Peter Panik, Anaylse ausgewählter Konzepte der modernen Softwareentwicklung
+Peter Panik, Analyse ausgewählter Konzepte der modernen Softwareentwicklung

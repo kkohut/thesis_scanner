@@ -15,7 +15,8 @@
         name: "fifth"
 
 <Label>:
-    font_size: 35
+    font_size: 40
+    halign: "center"
 
 <Button>:
     font_size: 35
@@ -35,7 +36,7 @@
 
     FloatLayout:
         Label:
-            text: "1. Insert your thesis in the scanner\n\nPlease make sure the cover page is facing up\n\n2. press \"START\""
+            text: "1. Insert your thesis in the scanner\n\nPlease make sure the cover page is facing up\n\n2. Press the \"START\" Button"
             halign: "center"
             pos_hint: {"center_x": 0.5, "center_y": 0.75}
 
@@ -114,8 +115,12 @@
 
     FloatLayout:
         Label:
+            text: "Analyzing"
+            pos_hint: {"center_x": 0.5, "center_y": 0.60}
+        Label:
             id: animation_label
-            text: "Analyzing the name of your Thesis"
+            font_size: 55
+            text: "Name of your Thesis\n"
 
 
 # screen for the analyzed data

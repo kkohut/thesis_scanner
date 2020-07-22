@@ -1,29 +1,92 @@
-import os
-import cv2
 import unittest
 import sys
+import os
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]),'thesis_scanner'))
+
+import cv2
+import numpy as np
+import imutils as mute
+from pytesseract import image_to_string as tess
 import alignImage as aI
 
 
 class alignImage_test(unittest.TestCase):
     def setUp(self):
-        # The setup before any test
-        # Load image, preprocess it and return the widest contour and angle
-        # so that it can be worked on in each individual test
+        testPicturesPath = os.path.join(os.path.dirname(__file__), "../tests/testpicturesalignimage/")
+        # Load images before any tests
 
-        absImagePath = os.path.join(os.path.dirname(__file__), "../data/testOhneFolie10.jpg")
+        # Test: test_align_image & test_right_degree
+        self.testAlignImage = cv2.imread(testPicturesPath + "testAlignImage10Degrees.jpg")
+        # Test: test_widest_contour
+        self.testPreprocessedImage = cv2.imread(testPicturesPath + "testPreprocessedImage.jpg")
+        self.testWidestContour = cv2.imread(testPicturesPath + "testWidestContour.jpg")
+        self.testWidestContourExpected = cv2.imread(testPicturesPath + "testWidestContourExpected.jpg")
+        # Test: test_image_upside_down
+        self.testUpsideDown = cv2.imread(testPicturesPath + "testUpsideDown.jpg")
 
-        self.image = cv2.imread(absImagePath)
-        self.preProcessedImage = aI.erode_image(aI.dilate_image(aI.thresh_image(aI.turn_image(self.image))))
-        self.widestContour = aI.find_widest_contour(self.preProcessedImage)
-        _, _, _, angleInRadians = aI.do_PCA(self.widestContour)
-        self.angleInDegrees = aI.get_angle_in_degrees(angleInRadians)
 
-    def test_checkIfAngleIsRight(self):
-        # This first test checks if 
-        self.assertEqual(int(self.angleInDegrees), int(6.549000525100995))
-
+    # Test the main function and see if the image gets aligned. Test by using Tesseract which looks for thesis and author
+    def test_align_image(self):
+        alignedImage, _, _ = aI.align_image(self.testAlignImage)
+        extractedText = tess(alignedImage, lang="deu")
         
+        match = (("Entwicklung" in extractedText) &
+            ("eines" in extractedText) &
+            ("ganz" in extractedText) &
+            ("tollen" in extractedText) &
+            ("Algorithmus" in extractedText) &
+            ("Super" in extractedText) &
+            ("Mario" in extractedText))
+
+        self.assertTrue(match)
+
+
+    # Test if alignImage finds the right tilt in degrees for a picture with a know degree of tilt (10 degrees in this case) 
+    def test_right_degree(self):
+        _, _, angleInDegreesActual = aI.align_image(self.testAlignImage)
+        angleInDegreesExpected = 10.0
+    	
+        # Check if the found degree is inbetween a set amount of deviation
+        self.assertTrue((angleInDegreesActual <= (angleInDegreesExpected + 1.0)) 
+            and (angleInDegreesActual >= (angleInDegreesExpected - 1.0)))
+
+
+    # Test if alignImage finds the right contour on a picture. Compare the picture with the drawn contour with a predrawn picture.
+    def test_widest_contour(self):
+        widestContour = aI.find_widest_contour(cv2.cvtColor(self.testPreprocessedImage, cv2.COLOR_BGR2GRAY))
+        cv2.drawContours(self.testWidestContour, widestContour, 
+            -1, (255, 200, 50), 3)
+        
+        actualImageGray = cv2.cvtColor(self.testWidestContour, cv2.COLOR_BGR2GRAY)
+        expectedImageGray = cv2.cvtColor(self.testWidestContourExpected, cv2.COLOR_BGR2GRAY)
+        
+        # Difference in the actual and expected picture using the Mean Squared Error equation. The higher, the bigger the difference
+        difference = np.sum((actualImageGray.astype("float") - expectedImageGray.astype("float")) ** 2)
+        difference /= float(actualImageGray.shape[0] * actualImageGray.shape[1])
+
+        # Check if the difference is under a set amount of deviation
+        self.assertTrue(difference <= 5.00)
+
+
+    # Test if a picture on its head gets aligned the right way. Test by turning it by 180 and using Tesseract looking for thesis and author
+    def test_image_upside_down(self):
+        alignedImageUpsideDown, widestContour, _ = aI.align_image(self.testUpsideDown)
+
+        # Picture should now be alignd, but on its head, so this turns it by 180 degrees
+        alignedImageUpright = mute.rotate_bound(alignedImageUpsideDown, 180)
+        
+        extractedText = tess(alignedImageUpright, lang="deu")
+        
+        match = (("Entwicklung" in extractedText) &
+            ("eines" in extractedText) &
+            ("ganz" in extractedText) &
+            ("tollen" in extractedText) &
+            ("Algorithmus" in extractedText) &
+            ("Super" in extractedText) &
+            ("Mario" in extractedText))
+
+        self.assertTrue(match)
+
+
 if __name__ == "__main__":
     unittest.main()

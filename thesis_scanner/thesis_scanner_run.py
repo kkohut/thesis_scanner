@@ -39,7 +39,7 @@ def main():
 
 
     # Bild gerade ausrichten
-    image = alignImage.align_image(image)
+    image, _, _ = alignImage.align_image(image)
     cv2.imwrite("thesis_scanner_run_alignedImage.jpg", image)
 
     # Bild Verbessern

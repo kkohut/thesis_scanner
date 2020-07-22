@@ -161,4 +161,4 @@ def align_image(image):
 	# reverse the image rotation using the calculated pitch
 	alignedImage = correct_image_alignment(image, angleInDegrees)
 
-	return alignedImage
+	return alignedImage, angleInDegrees, angleInDegrees

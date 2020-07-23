@@ -12,6 +12,7 @@ import textdistance
 
 import thesis_similarity
 import date_validity
+import timestamp
 from thesis import Author
 from thesis import Thesis
 
@@ -254,9 +255,16 @@ def print_thesis(thesis, thesis_data):
         unique_str = "unique"
     else:
         unique_str = "not unique"
+    title = "%.60s" % thesis.title
+    if not thesis.handed_in:
+        date_string = "-"
+        time_string = "-"
+    else:
+        date_string = timestamp.convert_timestamp(thesis.deadline)[:-8]
+        time_string = timestamp.convert_timestamp(thesis.time_handed_in)
     print(
         f"{thesis_data.index(thesis) + 1:3} | {thesis.author.name:20} | {thesis.author.authors_with_this_name:^3} |"
-        f" {unique_str:10} | {thesis.title:95} | {str(thesis.handed_in):^9} | {thesis.date_handed_in}")
+        f" {unique_str:10} | {title:60} | {str(thesis.handed_in):^9} | {date_string:^11} | {time_string:^16}")
 
 
 def print_all_theses(thesis_data):
@@ -269,7 +277,7 @@ def print_all_theses(thesis_data):
     Returns:
 
     """
-    print(f"{'#':>3} | {'Author':^20} | {'Nr.'} | {'Uniqueness':^10} | {'Title':^95} | {'Handed in':^6} | "
-          f"{'Date handed in'}")
+    print(f"{'#':>3} | {'Author':^20} | {'Nr.'} | {'Uniqueness':^10} | {'Title':^60} | {'Handed in':^6} | "
+          f"{'Deadline':^11} | {'Time handed in':^16}")
     for thesis in thesis_data:
         print_thesis(thesis, thesis_data)

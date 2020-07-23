@@ -8,5 +8,6 @@ setup(
                      'in order to check if it was handed in in time.',
     packages=['thesis_scanner'],
     install_requires=['opencv-python', 'pytesseract', 'pillow', 'textdistance', 'imutils', 'numpy', 'datetime',
-                      'pandas', 'pynput']
+                      'pandas', 'pynput', 'datefinder', 'langdetect', 'docutils', 'pygments', 'pypiwin32', 'kivy',
+                      'kivy_deps.sdl2', 'kivy_deps.glew']
 )

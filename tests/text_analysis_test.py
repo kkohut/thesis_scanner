@@ -1,4 +1,4 @@
-"""This test module tests all the functions of the text_analysis.py module"""
+"""This test module tests the functions of the text_analysis.py module"""
 
 """
     By Kevin Kohut
@@ -6,19 +6,12 @@
 
 import unittest
 import os
+import sys
 import pytesseract
 
 import text_analysis
 
-# DRY! -> WIP
-"""def prepare_test(rel_path, script_dir, thesis_data):
-    abs_file_path = os.path.join(script_dir, rel_path)
-    text = pytesseract.image_to_string(abs_file_path, lang="deu").upper()
-
-    essential_info = text_analysis.filter_string(text)
-    print(essential_info)
-    amount_theses_before_analysis = len(thesis_data)
-    return essential_info, amount_theses_before_analysis"""
+sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'thesis_scanner'))
 
 
 class TestThesisData(unittest.TestCase):
@@ -26,51 +19,41 @@ class TestThesisData(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # initializes found thesis and the length of the thesis_data list before the analysis
-        script_dir = os.path.dirname(__file__)
-        rel_path = "../data/thesis_data.txt"
-        abs_file_path = os.path.join(script_dir, rel_path)
-        cls.thesis_data = text_analysis.read_thesis_data(abs_file_path)
-
-        #essential_info = prepare_test("../data/PrototypBildMitFolie.jpeg", script_dir, cls.thesis_data)
-        #cls.found_thesis_super_mario = text_analysis.find_thesis(essential_info, cls.thesis_data)
+        rel_path = os.path.join(os.path.dirname(__file__), "../tests/")
+        cls.thesis_data = text_analysis.read_thesis_data(rel_path + "../data/thesis_data.txt")
 
         # preparation thesis 1
-        rel_path = "../data/PrototypBildMitFolie.jpeg"
-        abs_file_path = os.path.join(script_dir, rel_path)
-        text = pytesseract.image_to_string(abs_file_path, lang="deu").upper()
+        path_to_picture = "testpicturestextanalysis/sample_super_mario.jpg"
+        text = pytesseract.image_to_string(rel_path + path_to_picture, lang="deu").upper()
 
         essential_info = text_analysis.filter_string(text)
         cls.amount_theses_before_analysis = len(cls.thesis_data)
         cls.found_thesis_super_mario = text_analysis.find_thesis(essential_info, cls.thesis_data)
 
         # preparation for thesis 2
-        rel_path = "../data/sample_max_mustermann.jpg"
-        abs_file_path = os.path.join(script_dir, rel_path)
-        text = pytesseract.image_to_string(abs_file_path, lang="deu").upper()
+        path_to_picture = "testpicturestextanalysis/sample_max_mustermann.jpg"
+        text = pytesseract.image_to_string(rel_path + path_to_picture, lang="deu").upper()
 
         essential_info = text_analysis.filter_string(text)
         cls.found_thesis_max_mustermann = text_analysis.find_thesis(essential_info, cls.thesis_data)
 
         # preparation for thesis 3
-        rel_path = "../data/sample_sonja_superschlau.jpg"
-        abs_file_path = os.path.join(script_dir, rel_path)
-        text = pytesseract.image_to_string(abs_file_path, lang="deu").upper()
+        path_to_picture = "testpicturestextanalysis/sample_sonja_superschlau.jpg"
+        text = pytesseract.image_to_string(rel_path + path_to_picture, lang="deu").upper()
 
         essential_info = text_analysis.filter_string(text)
         cls.found_thesis_sonja_superschlau = text_analysis.find_thesis(essential_info, cls.thesis_data)
 
         # preparation for thesis 4
-        rel_path = "../data/sample_barbara_gruenwald.jpg"
-        abs_file_path = os.path.join(script_dir, rel_path)
-        text = pytesseract.image_to_string(abs_file_path, lang="deu").upper()
+        path_to_picture = "testpicturestextanalysis/sample_barbara_gruenwald.jpg"
+        text = pytesseract.image_to_string(rel_path + path_to_picture, lang="deu").upper()
 
         essential_info = text_analysis.filter_string(text)
         cls.found_thesis_barbara_gruenwald = text_analysis.find_thesis(essential_info, cls.thesis_data)
 
         # preparation for thesis 5
-        rel_path = "../data/sample_barbara_gruenwald_2.jpg"
-        abs_file_path = os.path.join(script_dir, rel_path)
-        text = pytesseract.image_to_string(abs_file_path, lang="deu").upper()
+        path_to_picture = "testpicturestextanalysis/sample_barbara_gruenwald_2.jpg"
+        text = pytesseract.image_to_string(rel_path + path_to_picture, lang="deu").upper()
 
         essential_info = text_analysis.filter_string(text)
         cls.found_thesis_barbara_gruenwald_2 = text_analysis.find_thesis(essential_info, cls.thesis_data)

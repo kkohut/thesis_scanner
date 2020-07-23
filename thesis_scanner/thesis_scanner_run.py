@@ -70,9 +70,6 @@ def main():
     print("\nERKANNTE ARBEIT:")
     text_analysis.print_thesis(found_thesis, thesis_data)
 
-    # Deadline auslesen
-    # deadline = deadline_validity.get_deadline(extracted_text)
-    # print(deadline_validity.test_validity(timeStamp))
     return found_thesis.author.name, found_thesis.title
 
 

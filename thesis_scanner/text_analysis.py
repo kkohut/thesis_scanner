@@ -8,14 +8,16 @@
     By Kevin Kohut
 """
 
+import logging
 import textdistance
 
 import thesis_similarity
-import date_validity
 import timestamp
 from thesis import Author
 from thesis import Thesis
 
+logging.basicConfig(filename="../data/logs/scan_results.log", level=logging.DEBUG, format="%(asctime)s %(levelname)s: %(message)s",
+                    datefmt="%d/%m/%Y %H:%M:%S")
 
 def read_thesis_data(file):
     """Reads the thesis data line by line from a text file and stores it in a list
@@ -153,17 +155,17 @@ def find_thesis(critical_lines, thesis_data):
     # if the author's name doesn't occur in the exact same way as in the thesis list,
     # search with a tolerance of 1 mistake each in the first and in the last name
     return find_thesis_with_tolerance(critical_lines, thesis_data)
-    # if none of the above functions can identify the thesis, throw a RuntimeError
-    raise RuntimeError("Arbeit konnte nicht identifiziert werden")
 
 
 def check_for_uniqueness_of_name(critical_lines, thesis_data, thesis):
     if thesis.author.name_unique:
         thesis.handed_in = True
+        logging.info(f"Thesis identified: {thesis.author.name}, {thesis.title}")
         return thesis
     else:
         thesis = compare_titles(critical_lines, thesis_data, thesis)
         thesis.handed_in = True
+        logging.info(f"Thesis identified: {thesis.author.name}, {thesis.title}")
         return thesis
 
 
@@ -237,6 +239,9 @@ def find_thesis_with_tolerance(critical_lines, thesis_data):
                     for w in words:
                         if textdistance.hamming(first_name, w) <= 1:
                             return check_for_uniqueness_of_name(critical_lines, thesis_data, thesis)
+    # if none of the prior functions can identify the thesis, log an error message and throw a RuntimeError
+    logging.warning("Thesis could not be identified")
+    raise RuntimeError("Arbeit konnte nicht identifiziert werden")
 
 
 def print_thesis(thesis, thesis_data):

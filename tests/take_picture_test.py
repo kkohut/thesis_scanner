@@ -4,7 +4,13 @@ by Daniel Rindin
 """
 
 import cv2
-import take_picture , unittest
+import unittest
+
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(sys.path[0]),'thesis_scanner'))
+
+import take_picture
 import numpy    #needed to create empty image 
 
 import threading

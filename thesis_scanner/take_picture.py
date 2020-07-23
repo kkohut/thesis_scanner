@@ -6,9 +6,16 @@ The script will timeout after the timeout_limit has been reached.
 Needed to acces the camera and then take a picture of the thesis, so it can be processed afterwards
 by Daniel Rindin
 """
+import os,sys,inspect
+current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir) 
+
+from thesis_scanner.timer import TimerError
+from thesis_scanner.timer import Timer
 
 import cv2 #using opencv version 4.2.0 for python 3.8
-from timer import Timer
+#from timer import Timer
 
 #Settings ( can be changed individually )
 width = 1080

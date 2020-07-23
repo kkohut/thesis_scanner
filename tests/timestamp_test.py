@@ -2,6 +2,9 @@
 this script is a unittest script to the "timsestamp.py" script 
 by Daniel Rindin
 """
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(sys.path[0]),'thesis_scanner'))
 
 from datetime import datetime
 import timestamp , unittest

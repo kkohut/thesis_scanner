@@ -131,14 +131,8 @@
         Label:
             id: a_name
 
-        LeftSideButton:
-            text: "Try Again"
-            on_release:
-                app.root.current = "second"
-                root.manager.transition.direction = "right"
-
-        RightSideButton:
-            text: "Save"
+        Button:
+            text: "Start again"
             on_release:
                 app.root.current = "first"
                 root.manager.transition.direction = "left"

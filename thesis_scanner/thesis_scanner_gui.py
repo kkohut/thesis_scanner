@@ -114,7 +114,7 @@ class FourthScreen(Screen):
             elif self.count == 2:
                 label.text = "Date of the Thesis\n"
             elif self.count == 3:
-                label.text = "Name of the Thesis\n"
+                label.text = "Title of the Thesis\n"
                 self.count = 0
 
     def analyze_thesis(self):

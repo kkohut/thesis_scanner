@@ -1,3 +1,7 @@
+"""
+    By Alexander Bayerlein
+"""
+
 from unittest import TestCase
 import cv2
 from thesis_scanner.rotate_image_180 import check_rotation, rotate_input

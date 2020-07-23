@@ -119,7 +119,15 @@ class FourthScreen(Screen):
 
     def analyze_thesis(self):
         app = App.get_running_app()
-        app.analyzed_name, app.analyzed_thesis = thesis_scanner_run.main()
+
+        try:
+            analyzed_author, analyzed_thesis = thesis_scanner_run.main()
+            app.analyzed_author_and_thesis = ("Analyzed Author:\n" + str(analyzed_author) +
+                                              "\n\n\nAnalyzed Thesis-Name:\n" + str(analyzed_thesis))
+        except:
+
+            app.analyzed_author_and_thesis = ">> Author and Thesis-Name could not be analyzed. Please try again! <<\n\n" \
+                                             ">> If the problem occures again, please contact an employee of the FHWS <<"
         self.manager.current = "fifth"
         self.analyze_thread_running = False
 
@@ -129,13 +137,11 @@ class FifthScreen(Screen):
 
     def on_pre_enter(self, *args):
         app = App.get_running_app()
-        self.ids.a_name.text = ("Analyzed Author:\n" + str(app.analyzed_name) +
-                                "\n\n\nAnalyzed Thesis-Name:\n" + str(app.analyzed_thesis))
+        self.ids.a_name.text = app.analyzed_author_and_thesis
 
 
 class ThesisScannerApp(App):
-    analyzed_name = ""
-    analyzed_thesis = ""
+    analyzed_author_and_thesis = ""
 
     def build(self):
         return ScreenManager()

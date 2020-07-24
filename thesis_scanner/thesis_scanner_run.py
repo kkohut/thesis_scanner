@@ -11,7 +11,11 @@ import rotate_image_180
 import text_analysis
 import deadline_validity
 import date_validity
+import logging
 
+logging.basicConfig(filename="../data/logs/scan_results.log", level=logging.DEBUG,
+                    format="%(asctime)s %(levelname)s: %(message)s",
+                    datefmt="%d/%m/%Y %H:%M:%S")
 
 def main():
     # GUI starten [Immer an]
@@ -59,7 +63,10 @@ def main():
     print("\nLISTE VOR DER ANALYSE:\n")
     text_analysis.print_all_theses(thesis_data)
     found_thesis = text_analysis.find_thesis(critical_lines, thesis_data)
-    found_thesis.deadline = date_validity.get_date(extracted_text.splitlines(), found_thesis.title)
+    try:
+        found_thesis.deadline = date_validity.get_date(extracted_text.splitlines(), found_thesis.title)
+    except RuntimeError:
+        logging.warning("Date could not be found")
 
     # Timestamp speichern
     found_thesis.time_handed_in = timestamp.get_timestamp()

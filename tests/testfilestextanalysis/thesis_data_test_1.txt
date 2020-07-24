@@ -1,0 +1,18 @@
+Max Mustermann, Flusserkennung auf Luftaufnahmen durch maschinelles Lernen
+Super Mario, Entwicklung eines ganz tollen Algorithmus
+Sonja Superschlau, Verbraucher-Tracking in der Datenökonomie und algorithmische Entscheidungsfindung
+Barbara Grünwald, Anwendungsmöglichkeiten und Risiken der Blockchain im Web 3.0
+Barbara Grünwald, Einsatz und Funktion der Polygone in der 3D-Modellierung
+Peter Schmidt, Ein weiterer toller Algorithmus
+Peter Panik, Analyse ausgewählter Konzepte der modernen Softwareentwicklung
+Lothar Lastminute, Konzeptionierung einer workflowbasierten Software für die Musikproduktion im Heimstudiosektor
+Super Mario, Der beste Algorithmus aller Zeiten
+Franziska Fendt, Analyse und Optimierung verschiedener Algorithmen zur Synchronisation von SQL-Datenbanken
+Sonja Superschlau, Verbraucher-Tracking in der Datenökonomie und algorithmische Entscheidungsfindung
+Boris Begabt, Approximationsalgorithmen für Set-Cover-Probleme mit Rechtecken
+Donald Duck, Analyse des Potenzials eines gemeinsamen Einsatzes von DevOps und Cloud Computing
+Franziska Fendt, Analyse und Optimierung verschiedener Algorithmen zur Synchronisation von SQL-Datenbanken
+Hanna Huber, Attempto Controlled English für Amazon Alexa
+Lothar Lastminute, Konzeptionierung einer workflowbasierten Software für die Musikproduktion im Heimstudiosektor
+Max Mustermann, Flusserkennung auf Luftaufnahmen durch maschinelles Lernen
+Peter Panik, Analyse ausgewählter Konzepte der modernen Softwareentwicklung

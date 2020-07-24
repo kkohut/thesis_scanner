@@ -1,0 +1,2 @@
+Max Mustermann, Flusserkennung auf Luftaufnahmen durch maschinelles Lernen
+Sonja Superschlau, Verbraucher-Tracking in der Datenökonomie und algorithmische Entscheidungsfindung

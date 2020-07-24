@@ -29,7 +29,7 @@ def main():
 
     # Bildverbesserung
     # rel_path = "thesis.png"  # for use with GUI
-    rel_path = "../data/Test_Duck.jpeg"
+    rel_path = "../data/Test_Begabt.jpeg"
     # rel_path = "../data/testMitFolie08.jpg"
     # rel_path = "../data/testAufKopf02.jpg"
     abs_file_path = os.path.join(script_dir, rel_path)

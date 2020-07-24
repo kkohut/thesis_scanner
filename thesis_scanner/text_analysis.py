@@ -16,8 +16,10 @@ import timestamp
 from thesis import Author
 from thesis import Thesis
 
-logging.basicConfig(filename="../data/logs/scan_results.log", level=logging.DEBUG, format="%(asctime)s %(levelname)s: %(message)s",
+logging.basicConfig(filename="../data/logs/scan_results.log", level=logging.DEBUG,
+                    format="%(asctime)s %(levelname)s: %(message)s",
                     datefmt="%d/%m/%Y %H:%M:%S")
+
 
 def read_thesis_data(file):
     """Reads the thesis data line by line from a text file and stores it in a list
@@ -129,7 +131,8 @@ def filter_string(text):
 
 
 def find_thesis(critical_lines, thesis_data):
-    """Looks for an author's name in each element of the info, if the name is unique, the thesis is found, else thesis titles have to be compared.
+    """Looks for an author's name in each element of the info, if the name is unique, the thesis is found,
+    else thesis titles have to be compared, else an author name is searched with a tolerance. If no thesis can be found
 
     Args:
         critical_lines: list
@@ -151,6 +154,9 @@ def find_thesis(critical_lines, thesis_data):
             # pos equals -1 if the substring doesn't occur; if it doesn't equal 1, the name of the author was found
             # also checks if first and last name are swapped
             if line.find(thesis.author.name) != -1 or line.find(swapped_author_name) != -1:
+                # if last name comes before first name, it needs to be swapped in thesis_data as well
+                if line.find(swapped_author_name) != -1:
+                    thesis.author.name = swapped_author_name
                 return check_for_uniqueness_of_name(critical_lines, thesis_data, thesis)
     # if the author's name doesn't occur in the exact same way as in the thesis list,
     # search with a tolerance of 1 mistake each in the first and in the last name
@@ -187,11 +193,8 @@ def compare_titles(info, thesis_data, thesis):
     """
 
     current_author = thesis.author.name
-    theses_with_same_author_names = []
-    # fill the above list with all the theses entries that need to be compared
-    for thesis in thesis_data:
-        if thesis.author.name == current_author:
-            theses_with_same_author_names.append(thesis)
+    # fill the list with all the theses entries that need to be compared
+    theses_with_same_author_names = [thesis for thesis in thesis_data if thesis.author.name == current_author]
     concat_lines = ""
     title_similarity = {}
     highest_similarity = 0
@@ -217,9 +220,9 @@ def find_thesis_with_tolerance(critical_lines, thesis_data):
 
     Args:
         critical_lines: list
-
+            lines that may contain critical information
         thesis_data: list
-
+            list with all thesis objects
     Returns:
         thesis: Thesis
     """
@@ -265,7 +268,10 @@ def print_thesis(thesis, thesis_data):
         date_string = "-"
         time_string = "-"
     else:
-        date_string = timestamp.convert_timestamp(thesis.deadline)[:-8]
+        try:
+            date_string = timestamp.convert_timestamp(thesis.deadline)[:-8]
+        except (RuntimeError, AttributeError):
+            date_string = "-"
         time_string = timestamp.convert_timestamp(thesis.time_handed_in)
     print(
         f"{thesis_data.index(thesis) + 1:3} | {thesis.author.name:20} | {thesis.author.authors_with_this_name:^3} |"

@@ -9,10 +9,8 @@ Lothar Lastminute, Konzeptionierung einer workflowbasierten Software für die Mu
 Super Mario, Der beste Algorithmus aller Zeiten
 Franziska Fendt, Analyse und Optimierung verschiedener Algorithmen zur Synchronisation von SQL-Datenbanken
 Sonja Superschlau, Verbraucher-Tracking in der Datenökonomie und algorithmische Entscheidungsfindung
-Boris Begabt, Approximationsalgorythmen fuer Set-Cover-Probleme mit Rechtecken
-Barbara Gruenwald, Anwendungsmöglichkeiten und Risiken der Blockchain im Web 3.0
+Boris Begabt, Approximationsalgorithmen für Set-Cover-Probleme mit Rechtecken
 Donald Duck, Analyse des Potenzials eines gemeinsamen Einsatzes von DevOps und Cloud Computing
-Barbara Gruenwald, Prototypische Konzeptionierung einer universellen Smart Home Applikation
 Franziska Fendt, Analyse und Optimierung verschiedener Algorithmen zur Synchronisation von SQL-Datenbanken
 Hanna Huber, Attempto Controlled English für Amazon Alexa
 Lothar Lastminute, Konzeptionierung einer workflowbasierten Software für die Musikproduktion im Heimstudiosektor

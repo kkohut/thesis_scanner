@@ -1,15 +1,13 @@
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(sys.path[0]),'thesis_scanner'))
+
+sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'thesis_scanner'))
 import cv2
-# import GUI
-# import take_picture
 import timestamp
 import picture_quality_improve
 import alignImage
 import rotate_image_180
 import text_analysis
-import deadline_validity
 import date_validity
 import logging
 
@@ -17,41 +15,28 @@ logging.basicConfig(filename="../data/logs/scan_results.log", level=logging.DEBU
                     format="%(asctime)s %(levelname)s: %(message)s",
                     datefmt="%d/%m/%Y %H:%M:%S")
 
+# Thesis Liste einlesen [abs_file_path = Pfad zur Thesis Liste]
+script_dir = os.path.dirname(__file__)
+rel_path = "../data/thesis_data.txt"
+abs_file_path = os.path.join(script_dir, rel_path)
+thesis_data = text_analysis.read_thesis_data(abs_file_path)
+
 def main():
-    # GUI starten [Immer an]
-    # GUI()
-
-    # Bild aufnehmen
-    # image = take_picture.process()
-    # cv2.imwrite("thesis_scanner_run_savedImage", image)
-
-    # Thesis Liste einlesen [abs_file_path = Pfad zur Thesis Liste]
-    script_dir = os.path.dirname(__file__)
-    rel_path = "../data/thesis_data.txt"
-    abs_file_path = os.path.join(script_dir, rel_path)
-    thesis_data = text_analysis.read_thesis_data(abs_file_path)
-
-    # Bildverbesserung
-    # rel_path = "thesis.png"  # for use with GUI
-    rel_path = "../data/Test_Begabt.jpeg"
-    # rel_path = "../data/testMitFolie08.jpg"
-    # rel_path = "../data/testAufKopf02.jpg"
+    # Bild einlesen
+    rel_path = "thesis.png"
     abs_file_path = os.path.join(script_dir, rel_path)
     image = cv2.imread(abs_file_path)
 
     # Bild gerade ausrichten
     image, _, _ = alignImage.align_image(image)
-    cv2.imwrite("thesis_scanner_run_alignedImage.jpg", image)
 
     # Bild verbessern
     image = picture_quality_improve.picture_quality_improve(image)
-    cv2.imwrite("thesis_scanner_run_improvedImage.jpg", image)
 
     # Bild auf hochkante Ausrichtung prüfen
     image, extracted_text = rotate_image_180.rotate_input(image)
-    cv2.imwrite("thesis_scanner_run_uprightImage.jpg", image)
 
-    # Pytesseract
+    # Demo: Liste auf Konsole ausgeben
     print("___________________________________________________________________________________________________________")
     print("EINGELESENER TEXT:\n", extracted_text)
 

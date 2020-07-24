@@ -33,7 +33,7 @@ def read_thesis_data(file):
             contains theses that are expected to be handed in
     """
     thesis_data = []
-    with open(file, "r") as f:
+    with open(file, "r", encoding="utf-8") as f:
         for line in f:
             line = line.upper()
             # splits author and title which should be seperated by a comma in the text file

@@ -1,3 +1,15 @@
+'''
+These are the unit tests for alignImage.py.
+
+Required packages:
+	OpenCV: pip install opencv-python
+	Numpy: pip install numpy
+	imUtils: pip install imutils
+	pytesseract: pip install pytesseract (requires Tesseract)
+
+*** By Luca Lanzo ***
+'''
+
 import unittest
 import sys
 import os
@@ -14,19 +26,20 @@ class alignImage_test(unittest.TestCase):
     def setUp(self):
         testPicturesPath = os.path.join(os.path.dirname(__file__), "../tests/testpicturesalignimage/")
         # Load images before any tests
-
-        # Test: test_align_image & test_right_degree
+        # for test_align_image & test_right_degree
         self.testAlignImage = cv2.imread(testPicturesPath + "testAlignImage10Degrees.jpg")
-        # Test: test_widest_contour
+        # for test_widest_contour
         self.testPreprocessedImage = cv2.imread(testPicturesPath + "testPreprocessedImage.jpg")
         self.testWidestContour = cv2.imread(testPicturesPath + "testWidestContour.jpg")
         self.testWidestContourExpected = cv2.imread(testPicturesPath + "testWidestContourExpected.jpg")
-        # Test: test_image_upside_down
+        # for test_image_upside_down
         self.testUpsideDown = cv2.imread(testPicturesPath + "testUpsideDown.jpg")
 
 
     # Test the main function and see if the image gets aligned. Test by using Tesseract which looks for thesis and author
     def test_align_image(self):
+        extractedTextFromPictureNotAligned = tess(self.testAlignImage, lang="deu")
+        
         alignedImage, _, _ = aI.align_image(self.testAlignImage)
         extractedText = tess(alignedImage, lang="deu")
         
@@ -38,7 +51,7 @@ class alignImage_test(unittest.TestCase):
             ("Super" in extractedText) &
             ("Mario" in extractedText))
 
-        self.assertTrue(match)
+        self.assertTrue(match, not(extractedTextFromPictureNotAligned))
 
 
     # Test if alignImage finds the right tilt in degrees for a picture with a know degree of tilt (10 degrees in this case) 
@@ -70,6 +83,8 @@ class alignImage_test(unittest.TestCase):
 
     # Test if a picture on its head gets aligned the right way. Test by turning it by 180 and using Tesseract looking for thesis and author
     def test_image_upside_down(self):
+        extractedTextFromPictureNotAligned = tess(mute.rotate_bound(self.testUpsideDown, 180), lang="deu")
+        
         alignedImageUpsideDown, widestContour, _ = aI.align_image(self.testUpsideDown)
 
         # Picture should now be alignd, but on its head, so this turns it by 180 degrees
@@ -85,7 +100,7 @@ class alignImage_test(unittest.TestCase):
             ("Super" in extractedText) &
             ("Mario" in extractedText))
 
-        self.assertTrue(match)
+        self.assertTrue(match, not(extractedTextFromPictureNotAligned))
 
 
 if __name__ == "__main__":

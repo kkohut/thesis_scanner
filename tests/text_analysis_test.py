@@ -10,12 +10,13 @@ import os
 import sys
 import pytesseract
 
+sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'thesis_scanner'))
+
 import text_analysis
 import thesis_similarity
 from thesis import Author
 from thesis import Thesis
 
-sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'thesis_scanner'))
 
 
 class TestThesisData(unittest.TestCase):

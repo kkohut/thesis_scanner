@@ -29,7 +29,7 @@ from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.uix.screenmanager import ScreenManager, Screen
 
-from thesis_scanner import thesis_scanner_run
+import thesis_scanner_run
 
 # Settings / by Daniel Rindin
 timeout_limit = 60  # in sec
@@ -53,7 +53,7 @@ class RightSideButton(Button):
 
 # start screen
 class FirstScreen(Screen):
-    source = "..\data\paper_input.zip"
+    source = "../data/paper_input.zip"
 
 
 # camera screen / by Daniel Rindin

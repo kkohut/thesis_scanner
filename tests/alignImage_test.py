@@ -24,7 +24,7 @@ import alignImage as aI
 
 class alignImage_test(unittest.TestCase):
     def setUp(self):
-        testPicturesPath = os.path.join(os.path.dirname(__file__), "../tests/testpicturesalignimage/")
+        testPicturesPath = os.path.join(os.path.dirname(__file__), "../tests/testpictures_alignimage/")
         # Load images before any tests
         # for test_align_image & test_right_degree
         self.testAlignImage = cv2.imread(testPicturesPath + "testAlignImage10Degrees.jpg")

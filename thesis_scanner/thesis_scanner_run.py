@@ -21,6 +21,7 @@ rel_path = "../data/thesis_data.txt"
 abs_file_path = os.path.join(script_dir, rel_path)
 thesis_data = text_analysis.read_thesis_data(abs_file_path)
 
+
 def main():
     # Bild einlesen
     rel_path = "thesis.png"

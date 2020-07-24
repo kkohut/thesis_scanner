@@ -1,6 +1,6 @@
 # Thesis Scanner
 
-<img src="https://raw.githubusercontent.com/LucaLanzo/ThesisScannerLogo/master/ThesisScannerLogo.JPG" alt="Thesis Scanner Logo" width="25%">
+<img src="https://raw.githubusercontent.com/LucaLanzo/ThesisScannerLogo/master/ThesisScannerLogo.JPG" alt="Thesis Scanner Logo" width="10%">
 
 Documentation: https://confluence.student.fiw.fhws.de:8443/display/PST/Programmierprojekt+SS20+Thesis-Scanner
 

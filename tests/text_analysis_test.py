@@ -16,7 +16,7 @@ import text_analysis
 import thesis_similarity
 from thesis import Author
 from thesis import Thesis
-
+pass
 
 
 class TestThesisData(unittest.TestCase):
@@ -24,8 +24,7 @@ class TestThesisData(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # initializes found thesis and the length of the thesis_data list before the analysis
-        cls.rel_path = os.path.join(os.path.dirname(__file__), "testfilestextanalysis/")
-                                #, "../tests/")
+        cls.rel_path = os.path.join(os.path.dirname(__file__), "testfiles_text_analysis/")
         cls.thesis_data = text_analysis.read_thesis_data(cls.rel_path + "thesis_data_test_1.txt")
 
         # preparation thesis 1

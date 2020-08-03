@@ -16,7 +16,6 @@ import text_analysis
 import thesis_similarity
 from thesis import Author
 from thesis import Thesis
-pass
 
 
 class TestThesisData(unittest.TestCase):
